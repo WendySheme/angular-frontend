@@ -1,0 +1,21 @@
+<div
+  [ngClass]="{
+    'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50': overlay,
+    'flex items-center justify-center': !overlay
+  }">
+  <div class="text-center">
+    <div
+      [ngClass]="[sizeClass, colorClass]"
+      class="animate-spin rounded-full border-4 mx-auto mb-4">
+    </div>
+    <p
+      *ngIf="message && overlay"
+      [ngClass]="{
+        'text-white': overlay,
+        'text-gray-600': !overlay
+      }"
+      class="text-sm font-medium">
+      {{ message }}
+    </p>
+  </div>
+</div>

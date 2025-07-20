@@ -1,0 +1,259 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- navigazione -->
+  <nav class="bg-white shadow-lg border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center">
+          <h1 class="text-xl font-bold text-gray-900">Dashboard Tutor</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-3" *ngIf="currentUser">
+            <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center shadow-md">
+              <span class="text-white text-sm font-bold">
+                {{ currentUser?.name?.charAt(0) || 'T' }}
+              </span>
+            </div>
+            <span class="text-gray-700 font-semibold">{{ currentUser?.name || 'Tutor' }}</span>
+          </div>
+          <button
+            (click)="logout()"
+            class="text-gray-500 hover:text-red-500 transition-colors p-2 hover:bg-gray-100 rounded-lg">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- intestazione -->
+    <div class="mb-10">
+      <h2 class="text-3xl font-bold text-gray-900 mb-3">Benvenuto, Prof. {{ currentUser?.name || 'Tutor' }}!</h2>
+      <p class="text-gray-600 text-lg">Monitora i tuoi studenti e gestisci le approvazioni</p>
+    </div>
+
+    <!-- schede statistiche -->
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-10" *ngIf="stats">
+      <app-stats-card
+        title="Studenti"
+        [value]="students.length"
+        icon="users"
+        color="primary">
+      </app-stats-card>
+
+      <app-stats-card
+        title="In Attesa"
+        [value]="pendingAttendance.length + pendingJustifications.length"
+        icon="clock"
+        color="warning">
+      </app-stats-card>
+
+      <app-stats-card
+        title="Assenze"
+        [value]="stats.totalAbsences || 0"
+        icon="x-circle"
+        color="error">
+      </app-stats-card>
+
+      <app-stats-card
+        title="Approvate"
+        [value]="stats.totalApproved || 0"
+        icon="check-circle"
+        color="success">
+      </app-stats-card>
+
+      <app-stats-card
+        title="Media %"
+        [value]="(stats.averageAttendance || 0) + '%'"
+        icon="trending-up"
+        color="info">
+      </app-stats-card>
+    </div>
+
+    <!-- main grid-->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- colonna sinistra - approvazioni -->
+      <div class="lg:col-span-2 space-y-8">
+        <!-- approvazioni presenze -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-gray-900">Approvazioni Presenze</h3>
+            <span class="px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-sm rounded-full shadow-md font-medium">
+              {{ pendingAttendance.length }} in attesa
+            </span>
+          </div>
+
+          <div *ngIf="pendingAttendance.length === 0" class="text-center py-8 text-gray-500">
+            <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+              <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <p class="text-lg font-medium">Nessuna presenza in attesa</p>
+            <p class="text-sm">Tutte le presenze sono state approvate</p>
+          </div>
+
+          <div *ngFor="let attendance of pendingAttendance" class="border border-gray-200 rounded-lg p-4 mb-4 hover:bg-gray-50 transition-colors">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <h4 class="font-semibold text-gray-900">{{ attendance.student?.name || 'Studente' }}</h4>
+                <p class="text-sm text-gray-600">{{ attendance.date | date:'dd/MM/yyyy' }}</p>
+              </div>
+              <span class="px-2 py-1 text-xs font-medium rounded-full"
+                    [ngClass]="attendance.status | statusColor:'bg'">
+                {{ attendance.status }}
+              </span>
+            </div>
+            <p class="text-sm text-gray-700 mb-3">{{ attendance.notes || 'Nessuna nota' }}</p>
+            <div class="flex gap-2">
+              <button (click)="approveAttendance(attendance.id)"
+                      class="px-4 py-2 bg-green-500 text-white text-sm rounded-lg hover:bg-green-600 transition-colors">
+                Approva
+              </button>
+              <button (click)="rejectAttendance(attendance.id)"
+                      class="px-4 py-2 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition-colors">
+                Rifiuta
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- approvazioni giustificazioni -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold text-gray-900">Approvazioni Giustificazioni</h3>
+            <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+              {{ pendingJustifications.length }} in attesa
+            </span>
+          </div>
+
+          <div *ngIf="pendingJustifications.length === 0" class="text-center py-8 text-gray-500">
+            <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+              <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <p class="text-lg font-medium">Nessuna giustificazione in attesa</p>
+            <p class="text-sm">Tutte le giustificazioni sono state processate</p>
+          </div>
+
+          <div *ngFor="let justification of pendingJustifications" class="border border-gray-200 rounded-lg p-4 mb-4 hover:bg-gray-50 transition-colors">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <h4 class="font-semibold text-gray-900">{{ justification.student?.name || 'Studente' }}</h4>
+                <p class="text-sm text-gray-600">{{ justification.attendanceDate | date:'dd/MM/yyyy' }}</p>
+              </div>
+              <span class="px-2 py-1 text-xs font-medium rounded-full"
+                    [ngClass]="justification.status | statusColor:'bg'">
+                {{ justification.status }}
+              </span>
+            </div>
+            <div class="mb-3">
+              <p class="text-sm font-medium text-gray-700">Motivo: {{ justification.reason }}</p>
+              <p class="text-sm text-gray-600 mt-1">{{ justification.description }}</p>
+            </div>
+            <div class="flex gap-2">
+              <button (click)="approveJustification(justification.id)"
+                      class="px-4 py-2 bg-green-500 text-white text-sm rounded-lg hover:bg-green-600 transition-colors">
+                Approva
+              </button>
+              <button (click)="rejectJustification(justification.id)"
+                      class="px-4 py-2 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600 transition-colors">
+                Rifiuta
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- colonna destra - studenti e azioni -->
+      <div class="space-y-8">
+        <!-- lista studenti -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-gray-900">I Miei Studenti</h3>
+            <button class="px-4 py-2 bg-indigo-600 text-white text-sm rounded-lg hover:bg-indigo-700 transition-colors">
+              <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              Esporta
+            </button>
+          </div>
+
+          <div *ngIf="students.length === 0" class="text-center py-8 text-gray-500">
+            <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+              <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+              </svg>
+            </div>
+            <p class="text-lg font-medium">Nessuno studente assegnato</p>
+            <p class="text-sm">Gli studenti appariranno qui quando verranno assegnati</p>
+          </div>
+
+          <div class="space-y-3">
+            <div *ngFor="let student of students" class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+                  <span class="text-white text-sm font-bold">{{ student.name?.charAt(0) || 'S' }}</span>
+                </div>
+                <div>
+                  <h4 class="font-semibold text-gray-900">{{ student.name || 'Nome non disponibile' }}</h4>
+                  <p class="text-sm text-gray-600">{{ student.email }}</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="px-2 py-1 text-xs font-medium rounded-full"
+                      [ngClass]="student.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'">
+                  {{ student.isActive ? 'Attivo' : 'Inattivo' }}
+                </span>
+                <button class="text-gray-400 hover:text-gray-600 p-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- azioni rapide -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Azioni Rapide</h3>
+
+          <div class="space-y-3">
+            <button class="w-full flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                 d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+              Report Mensile
+            </button>
+
+            <button
+              (click)="sendNotification()"
+              class="w-full flex items-center justify-center px-4 py-3 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+              </svg>
+              Invia Notifica
+            </button>
+
+            <button class="w-full flex items-center justify-center px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Approva Tutto
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

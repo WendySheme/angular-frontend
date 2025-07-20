@@ -1,0 +1,61 @@
+.role-selection {
+  padding: 2rem 0;
+}
+
+.role-card {
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, transparent);
+    transition: background 0.3s ease;
+  }
+
+  &.selected-student::before {
+    background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+  }
+
+  &.selected-tutor::before {
+    background: linear-gradient(90deg, #f59e0b, #d97706);
+  }
+}
+
+.feature-item {
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+
+  @for $i from 1 through 4 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.1}s;
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// responsivo mobile
+@media (max-width: 768px) {
+  .role-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .role-card {
+    padding: 1.5rem;
+  }
+}

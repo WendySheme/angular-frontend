@@ -1,36 +1,44 @@
 {
-  "name": "angular-frontend",
-  "version": "0.0.0",
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
-  },
-  "private": true,
   "dependencies": {
-    "@angular/common": "^20.0.0",
-    "@angular/compiler": "^20.0.0",
-    "@angular/core": "^20.0.0",
-    "@angular/forms": "^20.0.0",
-    "@angular/platform-browser": "^20.0.0",
-    "@angular/router": "^20.0.0",
+    "@angular/animations": "^16.0.0",
+    "@angular/cdk": "^16.0.0",
+    "@angular/common": "^16.0.0",
+    "@angular/compiler": "^16.0.0",
+    "@angular/core": "^16.0.0",
+    "@angular/forms": "^16.0.0",
+    "@angular/material": "^16.0.0",
+    "@angular/platform-browser": "^16.0.0",
+    "@angular/platform-browser-dynamic": "^16.0.0",
+    "@angular/router": "^16.0.0",
+    "@tailwindcss/postcss": "^4.1.11",
+    "chart.js": "^4.3.0",
+    "date-fns": "^2.30.0",
+    "lodash": "^4.17.21",
+    "ng2-charts": "^5.0.0",
     "rxjs": "~7.8.0",
+    "socket.io-client": "^4.7.0",
     "tslib": "^2.3.0",
-    "zone.js": "~0.15.0"
+    "zone.js": "~0.13.0"
   },
   "devDependencies": {
-    "@angular/build": "^20.0.3",
-    "@angular/cli": "^20.0.3",
-    "@angular/compiler-cli": "^20.0.0",
-    "@types/jasmine": "~5.1.0",
-    "jasmine-core": "~5.7.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.8.2"
+    "@angular-devkit/build-angular": "^16.2.16",
+    "@angular/cli": "^16.2.16",
+    "@angular/compiler-cli": "^16.2.12",
+    "@types/lodash": "^4.14.195",
+    "@types/socket.io-client": "^3.0.0",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24",
+    "tailwindcss": "^3.3.0",
+    "typescript": "~5.1.0"
+  },
+  "scripts": {
+    "build:prod": "ng build --configuration production",
+    "build:dev": "ng build --configuration development",
+    "start:dev": "ng serve --configuration development",
+    "start:prod": "ng serve --configuration production",
+    "test:unit": "ng test",
+    "test:e2e": "ng e2e",
+    "lint": "ng lint",
+    "analyze": "ng build --stats-json && npx webpack-bundle-analyzer dist/stats.json"
   }
 }

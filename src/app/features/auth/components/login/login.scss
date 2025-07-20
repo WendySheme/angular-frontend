@@ -1,0 +1,63 @@
+.role-button {
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  &.active {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.demo-credentials {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.password-toggle {
+  transition: color 0.2s ease;
+}
+
+// stili focus personalizzati
+.form-input:focus {
+  transform: scale(1.02);
+  transition: transform 0.2s ease;
+}
+
+// animazione per selezione ruolo
+.role-selector {
+  .role-button {
+    animation: fadeInUp 0.6s ease forwards;
+
+    &:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// responsivo mobile
+@media (max-width: 640px) {
+  .login-card {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .role-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}

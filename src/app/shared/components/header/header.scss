@@ -1,0 +1,28 @@
+.notification-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 20px;
+  height: 20px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.user-avatar {
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+// responsivo mobile
+@media (max-width: 640px) {
+  .user-info {
+    display: none;
+  }
+
+  .nav-title {
+    font-size: 1rem;
+  }
+}
