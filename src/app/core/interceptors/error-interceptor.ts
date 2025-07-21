@@ -40,7 +40,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         }
 
         if (error.status !== 401) { // Non mostrare notifica per errori 401 
-          this.notificationService.showError(errorMessage);
+          this.notificationService.error('Errore', errorMessage);
         }
 
         return throwError(() => error);

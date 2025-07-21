@@ -9,8 +9,8 @@ import { ToastNotification } from '../../../core/services/notification';
   selector: 'app-notification',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './notification.component.html',
-  styleUrls: ['./notification.component.scss']
+  templateUrl: './notification.html',
+  styleUrls: ['./notification.scss']
 })
 export class NotificationComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

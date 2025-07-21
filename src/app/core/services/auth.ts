@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { environment } from '../../../environment';
-import { User, LoginCredentials, AuthResponse } from '../models/interfaces';
+import { User, LoginCredentials, AuthResponse, ApiResponse } from '../models/interfaces';
 
 
 @Injectable({

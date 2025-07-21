@@ -199,17 +199,17 @@
             <div *ngFor="let student of students" class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
               <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
-                  <span class="text-white text-sm font-bold">{{ student.name?.charAt(0) || 'S' }}</span>
+                  <span class="text-white text-sm font-bold">{{ student.student?.name?.charAt(0) || 'S' }}</span>
                 </div>
                 <div>
-                  <h4 class="font-semibold text-gray-900">{{ student.name || 'Nome non disponibile' }}</h4>
-                  <p class="text-sm text-gray-600">{{ student.email }}</p>
+                  <h4 class="font-semibold text-gray-900">{{ student.student?.name || 'Nome non disponibile' }}</h4>
+                  <p class="text-sm text-gray-600">{{ student.student?.email }}</p>
                 </div>
               </div>
               <div class="flex items-center space-x-2">
                 <span class="px-2 py-1 text-xs font-medium rounded-full"
-                      [ngClass]="student.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'">
-                  {{ student.isActive ? 'Attivo' : 'Inattivo' }}
+                      [ngClass]="student.student?.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'">
+                  {{ student.student?.isActive ? 'Attivo' : 'Inattivo' }}
                 </span>
                 <button class="text-gray-400 hover:text-gray-600 p-1">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

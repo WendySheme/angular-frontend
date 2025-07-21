@@ -5,6 +5,7 @@ export interface Attendance {
   studentId: string;
   student?: User;
   date: Date;
+  timestamp?: Date; // Add timestamp for template compatibility
   status: AttendanceStatus;
   timeIn?: Date;
   timeOut?: Date;

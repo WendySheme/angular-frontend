@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AuthService } from '../../../../core/services/auth';
@@ -11,8 +12,9 @@ import { AttendanceStats } from '../../../../shared/models/attendance';
 import { Justification } from '../../../../shared/models/justification';
 
 @Component({
-
   selector: 'app-student-dashboard',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './student-dashboard.component.html',
   styleUrls: ['./student-dashboard.component.scss']
 })
@@ -25,6 +27,18 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
   stats: AttendanceStats | null = null;
   recentJustifications: Justification[] = [];
   isLoading = false;
+  
+  get isRegistered(): boolean {
+    return !!this.todayAttendance;
+  }
+  
+  get statusColor(): string {
+    return this.getAttendanceStatusColor();
+  }
+  
+  get statusText(): string {
+    return this.getAttendanceStatusText();
+  }
 
   constructor(
     private authService: AuthService,
@@ -168,5 +182,13 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
       default:
         return 'Stato sconosciuto';
     }
+  }
+
+  onMarkPresent(): void {
+    this.markPresent();
+  }
+
+  onMarkAbsent(): void {
+    this.markAbsent();
   }
 }

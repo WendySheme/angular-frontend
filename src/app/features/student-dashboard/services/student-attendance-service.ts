@@ -69,7 +69,7 @@ export class StudentAttendanceService {
 
       // Update today's attendance if it's today's record
       const today = new Date().toISOString().split('T')[0];
-      if (updatedAttendance.date === today) {
+      if (updatedAttendance.date instanceof Date && updatedAttendance.date.toISOString().split('T')[0] === today) {
         this.todayAttendanceSubject.next(updatedAttendance);
       }
     });
@@ -77,7 +77,7 @@ export class StudentAttendanceService {
 
   private updateTodayAttendance(attendance: Attendance[]): void {
     const today = new Date().toISOString().split('T')[0];
-    const todayRecord = attendance.find(a => a.date === today);
+    const todayRecord = attendance.find(a => a.date instanceof Date && a.date.toISOString().split('T')[0] === today);
     this.todayAttendanceSubject.next(todayRecord || null);
   }
 }

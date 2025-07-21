@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
+import { Router, NavigationEnd, RouterOutlet, Event } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs/operators';
 import { AuthService } from './core/services/auth';
@@ -42,15 +42,15 @@ export class AppComponent implements OnInit {
 
   private setupRouteRedirection(): void {
     this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
+      .pipe(filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd))
+        .subscribe((event: NavigationEnd) => {
         // reindirizzamento automatico utenti autenticati
-        if (event.url.startsWith('/auth') && this.authService.getCurrentUser()) {
-          const user = this.authService.getCurrentUser();
-          if (user?.role === 'student') {
-            this.router.navigate(['/student']);
-          } else if (user?.role === 'tutor') {
-            this.router.navigate(['/tutor']);
+          if (event.url.startsWith('/auth') && this.authService.getCurrentUser()) {
+           const user = this.authService.getCurrentUser();
+             if (user?.role === 'student') {
+              this.router.navigate(['/student']);
+                } else if (user?.role === 'tutor') {
+                   this.router.navigate(['/tutor']);
           }
         }
       });

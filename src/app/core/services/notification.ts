@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { ApiService } from './api';
 import { WebSocketService } from './websocket';
 import { Notification } from '../../shared/models/notification';
@@ -32,6 +33,8 @@ export class NotificationService {
     this.setupWebSocketListeners();
     this.loadNotifications();
   }
+
+
 
   // notifiche toast
   showToast(notification: Omit<ToastNotification, 'id'>): void {
@@ -77,6 +80,10 @@ export class NotificationService {
     return this.apiService.get<Notification[]>('/notifications').pipe(
       tap((notifications: Notification[]) => {
         this.notificationsSubject.next(notifications);
+        this.updateUnreadCount(notifications);
+      })
+    );
+  }
 
   markAsRead(notificationId: string): Observable<void> {
     return this.apiService.patch<void>(`/notifications/${notificationId}/read`, {}).pipe(
@@ -89,7 +96,7 @@ export class NotificationService {
       })
     );
   }
-
+      
   markAllAsRead(): Observable<void> {
     return this.apiService.patch<void>('/notifications/read-all', {}).pipe(
       tap(() => {
@@ -116,11 +123,13 @@ export class NotificationService {
     });
   }
 
+
   private updateUnreadCount(notifications: Notification[]): void {
-    const unreadCount = notifications.filter(n => !n.read).length;
+    const unreadCount = notifications.filter(n => !n.isRead).length;
     this.unreadCountSubject.next(unreadCount);
   }
 
   private generateId(): string {
     return Math.random().toString(36).substr(2, 9);
   }
+}

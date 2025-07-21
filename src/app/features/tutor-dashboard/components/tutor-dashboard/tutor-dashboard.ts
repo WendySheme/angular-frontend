@@ -12,7 +12,7 @@ import { DateFormatPipe } from '../../../../shared/pipes/date-format-pipe';
 import { StatusColorPipe } from '../../../../shared/pipes/status-color-pipe';
 import { User } from '../../../../shared/models/user';
 import { Attendance } from '../../../../shared/models/attendance';
-import { Justification } from '../../../../shared/models/justification';
+import { Justification, StudentSummary } from '../../../../shared/models/justification';
 
 @Component({
   selector: 'app-tutor-dashboard',
@@ -27,7 +27,7 @@ export class TutorDashboardComponent implements OnInit, OnDestroy {
   currentUser: User | null = null;
   pendingAttendance: Attendance[] = [];
   pendingJustifications: Justification[] = [];
-  students: User[] = [];
+  students: StudentSummary[] = [];
   stats: any = null;
   isLoading = false;
 

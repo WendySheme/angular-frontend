@@ -5,6 +5,7 @@ import { ApiService } from '../../../core/services/api';
 import { WebSocketService } from '../../../core/services/websocket';
 import { Justification } from '../../../shared/models/justification';
 import { PaginatedResponse } from '../../../shared/models/justification';
+import { EntityId } from '../../../shared/types/entity';
 
 export interface JustificationApproval {
   justificationId: EntityId;

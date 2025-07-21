@@ -83,4 +83,8 @@ export class RoleSelectionComponent {
 
     return `${baseClasses} text-gray-800`;
   }
+
+  trackByRole(index: number, role: any): any {
+    return role.id;
+  }
 }

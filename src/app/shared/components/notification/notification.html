@@ -1,7 +1,7 @@
 <div class="notification-container">
   <div
-    *ngFor="let toast of toasts; trackBy: trackByToastId"
-    [ngClass]="getToastClasses(toast.type)"
+    *ngFor="let toast of notifications; trackBy: trackByFn"
+    [ngClass]="getNotificationClasses(toast)"
     [@slideIn]>
     <div class="flex items-start">
       <div class="flex-shrink-0">
@@ -15,7 +15,7 @@
       </div>
       <div class="ml-4 flex-shrink-0">
         <button
-          (click)="removeToast(toast.id)"
+          (click)="dismiss(toast.id)"
           class="inline-flex text-white hover:text-gray-200 focus:outline-none">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>

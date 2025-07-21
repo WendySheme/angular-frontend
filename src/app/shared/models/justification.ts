@@ -1,12 +1,17 @@
 import { Attendance } from "./attendance";
 import { User } from "./user";
 
+export type JustificationType = 'medical' | 'illness' | 'family' | 'other';
+
 export interface Justification {
   id: string;
   studentId: string;
+  student?: User; // Add student object for template access
   date: string;
-  type: 'medical' | 'illness' | 'family' | 'other';
+  attendanceDate?: string; // Add attendanceDate for template access
+  type: JustificationType;
   reason: string;
+  description?: string; // Add description for template access
   status: 'pending' | 'approved' | 'rejected';
   attachments?: File[];
   submittedAt: Date;
