@@ -6,7 +6,9 @@ export interface ConfirmDialogData {
   message: string;
   confirmText?: string;
   cancelText?: string;
-  type?: 'info' | 'warning' | 'danger' | 'success';
+  type?: 'info' | 'warning' | 'danger' | 'success' | 'toast';
+  showCancel?: boolean;
+  variant?: 'info' | 'success' | 'warning' | 'error';
 }
 
 @Component({

@@ -8,7 +8,6 @@ import { TutorAttendanceService } from '../../services/tutor-attendance';
 import { TutorJustificationService } from '../../services/tutor-justification';
 import { StudentManagementService } from '../../services/student-management';
 import { StatsCardComponent } from '../../../../shared/components/stats-card/stats-card';
-import { DateFormatPipe } from '../../../../shared/pipes/date-format-pipe';
 import { StatusColorPipe } from '../../../../shared/pipes/status-color-pipe';
 import { User } from '../../../../shared/models/user';
 import { Attendance } from '../../../../shared/models/attendance';
@@ -17,7 +16,7 @@ import { Justification, StudentSummary } from '../../../../shared/models/justifi
 @Component({
   selector: 'app-tutor-dashboard',
   standalone: true,
-  imports: [CommonModule, StatsCardComponent, DateFormatPipe, StatusColorPipe],
+  imports: [CommonModule, StatsCardComponent, StatusColorPipe],
   templateUrl: './tutor-dashboard.html',
   styleUrls: ['./tutor-dashboard.scss']
 })
