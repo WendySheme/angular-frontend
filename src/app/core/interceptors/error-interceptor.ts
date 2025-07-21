@@ -14,7 +14,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         let errorMessage = 'Si è verificato un errore';
 
         if (error.error instanceof ErrorEvent) {
-          // Client-side error
+          // errore client side
           errorMessage = error.error.message;
         } else {
           // Server-side error
@@ -39,7 +39,7 @@ export class ErrorInterceptor implements HttpInterceptor {
           }
         }
 
-        if (error.status !== 401) { // Non mostrare notifica per errori 401 (gestiti da AuthInterceptor)
+        if (error.status !== 401) { // Non mostrare notifica per errori 401 
           this.notificationService.showError(errorMessage);
         }
 
