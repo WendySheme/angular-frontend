@@ -28,7 +28,12 @@ export class AuthService {
     this.checkTokenValidity();
   }
 
-  login(credentials: LoginCredentials): Observable<AuthResponse> {
+  login(credentials: LoginCredentials & { role?: string }): Observable<AuthResponse> {
+    // Development bypass when backend is not available
+    if (environment.enableAuthBypass && (environment as any).developmentUsers) {
+      return this.handleDevLogin(credentials);
+    }
+
     return this.http.post<ApiResponse<AuthResponse>>(`${environment.apiUrl}/auth/login`, credentials)
       .pipe(
         map(response => response.data),
@@ -39,9 +44,43 @@ export class AuthService {
         }),
         catchError(error => {
           console.error('Login error:', error);
+          // Fallback to dev login if backend is not available
+          if (environment.enableAuthBypass) {
+            console.warn('Backend not available, falling back to development bypass');
+            return this.handleDevLogin(credentials);
+          }
           return throwError(error);
         })
       );
+  }
+
+  private handleDevLogin(credentials: LoginCredentials & { role?: string }): Observable<AuthResponse> {
+    const devUsers = (environment as any).developmentUsers;
+    const user = devUsers[credentials.email];
+    
+    if (!user || credentials.password !== 'demo123') {
+      return throwError({
+        error: { message: 'Credenziali non valide. Usa email demo e password "demo123"' }
+      });
+    }
+
+    // Simulate API delay
+    return new Observable<AuthResponse>(subscriber => {
+      setTimeout(() => {
+        const authResponse: AuthResponse = {
+          user: user,
+          token: `dev-token-${user.id}-${Date.now()}`,
+          refreshToken: `dev-refresh-${user.id}-${Date.now()}`
+        };
+        
+        this.setSession(authResponse);
+        this.currentUserSubject.next(authResponse.user);
+        this.isAuthenticatedSubject.next(true);
+        
+        subscriber.next(authResponse);
+        subscriber.complete();
+      }, 800); // Simulate network delay
+    });
   }
 
   logout(): void {

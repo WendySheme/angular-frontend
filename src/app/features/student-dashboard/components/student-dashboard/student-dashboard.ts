@@ -11,6 +11,13 @@ import { Attendance } from '../../../../shared/models/attendance';
 import { AttendanceStats } from '../../../../shared/models/attendance';
 import { Justification } from '../../../../shared/models/justification';
 
+interface CalendarDay {
+  date: Date;
+  isCurrentMonth: boolean;
+  isToday: boolean;
+  status?: 'present' | 'absent' | 'justified';
+}
+
 @Component({
   selector: 'app-student-dashboard',
   standalone: true,
@@ -27,6 +34,11 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
   stats: AttendanceStats | null = null;
   recentJustifications: Justification[] = [];
   isLoading = false;
+  
+  // Calendar properties
+  currentCalendarDate = new Date();
+  calendarDays: CalendarDay[] = [];
+  monthlyAttendance: { [key: string]: 'present' | 'absent' | 'justified' } = {};
   
   get isRegistered(): boolean {
     return !!this.todayAttendance;
@@ -51,6 +63,8 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
     this.loadUserData();
     this.loadDashboardData();
     this.setupSubscriptions();
+    this.loadMockAttendanceData();
+    this.generateCalendar();
   }
 
   ngOnDestroy(): void {
@@ -190,5 +204,161 @@ export class StudentDashboardComponent implements OnInit, OnDestroy {
 
   onMarkAbsent(): void {
     this.markAbsent();
+  }
+
+  // Calendar Methods
+  generateCalendar(): void {
+    const year = this.currentCalendarDate.getFullYear();
+    const month = this.currentCalendarDate.getMonth();
+    
+    // First day of the month
+    const firstDay = new Date(year, month, 1);
+    // Last day of the month
+    const lastDay = new Date(year, month + 1, 0);
+    
+    // Get the day of the week for the first day (0 = Sunday, 1 = Monday, etc.)
+    // Adjust for Monday start (0 = Monday, 6 = Sunday)
+    const firstDayOfWeek = (firstDay.getDay() + 6) % 7;
+    
+    const days: CalendarDay[] = [];
+    
+    // Add days from previous month
+    const prevMonthLastDay = new Date(year, month, 0);
+    for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+      const date = new Date(prevMonthLastDay.getFullYear(), prevMonthLastDay.getMonth(), prevMonthLastDay.getDate() - i);
+      days.push({
+        date,
+        isCurrentMonth: false,
+        isToday: this.isToday(date),
+        status: this.getAttendanceStatus(date)
+      });
+    }
+    
+    // Add days of current month
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+      const date = new Date(year, month, day);
+      days.push({
+        date,
+        isCurrentMonth: true,
+        isToday: this.isToday(date),
+        status: this.getAttendanceStatus(date)
+      });
+    }
+    
+    // Add days from next month to complete the grid
+    const totalCells = 42; // 6 rows × 7 days
+    const remainingCells = totalCells - days.length;
+    for (let day = 1; day <= remainingCells; day++) {
+      const date = new Date(year, month + 1, day);
+      days.push({
+        date,
+        isCurrentMonth: false,
+        isToday: this.isToday(date),
+        status: this.getAttendanceStatus(date)
+      });
+    }
+    
+    this.calendarDays = days;
+  }
+
+  previousMonth(): void {
+    this.currentCalendarDate = new Date(
+      this.currentCalendarDate.getFullYear(),
+      this.currentCalendarDate.getMonth() - 1,
+      1
+    );
+    this.generateCalendar();
+  }
+
+  nextMonth(): void {
+    this.currentCalendarDate = new Date(
+      this.currentCalendarDate.getFullYear(),
+      this.currentCalendarDate.getMonth() + 1,
+      1
+    );
+    this.generateCalendar();
+  }
+
+  private isToday(date: Date): boolean {
+    const today = new Date();
+    return date.getDate() === today.getDate() &&
+           date.getMonth() === today.getMonth() &&
+           date.getFullYear() === today.getFullYear();
+  }
+
+  private getAttendanceStatus(date: Date): 'present' | 'absent' | 'justified' | undefined {
+    const dateKey = this.formatDateKey(date);
+    return this.monthlyAttendance[dateKey];
+  }
+
+  private formatDateKey(date: Date): string {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  }
+
+  // Justification Methods
+  openJustificationForm(): void {
+    this.notificationService.info('Info', 'Funzionalità di giustificazione in sviluppo');
+  }
+
+  trackByJustificationId(index: number, justification: Justification): string {
+    return justification.id;
+  }
+
+  getJustificationStatusClass(status: string): string {
+    switch (status?.toLowerCase()) {
+      case 'pending':
+      case 'in_attesa':
+        return 'pending';
+      case 'approved':
+      case 'approvata':
+        return 'approved';
+      case 'rejected':
+      case 'respinta':
+        return 'rejected';
+      default:
+        return 'pending';
+    }
+  }
+
+  getJustificationStatusText(status: string): string {
+    switch (status?.toLowerCase()) {
+      case 'pending':
+      case 'in_attesa':
+        return 'In Attesa';
+      case 'approved':
+      case 'approvata':
+        return 'Approvata';
+      case 'rejected':
+      case 'respinta':
+        return 'Respinta';
+      default:
+        return 'In Attesa';
+    }
+  }
+
+  // Mock data for development - remove when backend is connected
+  private loadMockAttendanceData(): void {
+    // Mock monthly attendance data
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+    
+    // Generate some mock attendance data for the current month
+    for (let day = 1; day <= 25; day++) {
+      const date = new Date(currentYear, currentMonth, day);
+      const dateKey = this.formatDateKey(date);
+      
+      if (day <= new Date().getDate()) {
+        // Random attendance status for past days
+        const rand = Math.random();
+        if (rand > 0.8) {
+          this.monthlyAttendance[dateKey] = 'absent';
+        } else if (rand > 0.7) {
+          this.monthlyAttendance[dateKey] = 'justified';
+        } else {
+          this.monthlyAttendance[dateKey] = 'present';
+        }
+      }
+    }
   }
 }
