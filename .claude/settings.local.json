@@ -16,7 +16,8 @@
       "Bash(curl:*)",
       "Bash(grep:*)",
       "Bash(ren:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }

@@ -1,1 +1,120 @@
-<p>attendance-approval works!</p>
+<div class="attendance-approval-container">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-6">
+    <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+      <svg class="w-6 h-6 mr-3 text-green-600 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+      </svg>
+      Approvazione Presenze
+    </h2>
+    <div class="flex items-center space-x-3">
+      <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm font-medium rounded-full">
+        {{ pendingAttendance?.length || 0 }} in attesa
+      </span>
+      <button class="btn-solid btn-secondary px-4 py-2 text-sm flex items-center">
+        <svg class="w-4 h-4 mr-2 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m0 0a2 2 0 012 2v8a2 2 0 01-2 2H6a2 2 0 01-2-2v-8a2 2 0 012-2h8z"></path>
+        </svg>
+        Oggi
+      </button>
+    </div>
+  </div>
+
+  <!-- Attendance List -->
+  <div class="space-y-4">
+    <div *ngFor="let attendance of pendingAttendance" 
+         class="glass-card p-6 hover:shadow-xl transition-all duration-300">
+      
+      <!-- Attendance Header -->
+      <div class="flex items-start justify-between mb-4">
+        <div class="flex items-center">
+          <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+            <svg class="w-6 h-6 text-blue-600 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-900">{{ attendance.student?.name || 'Studente' }}</h3>
+            <p class="text-sm text-gray-600">{{ attendance.student?.email }}</p>
+            <p class="text-xs text-gray-500 mt-1">
+              ID: {{ attendance.student?.studentId }}
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-2">
+          <span class="px-2 py-1 text-xs font-medium rounded-full"
+                [ngClass]="{
+                  'bg-yellow-100 text-yellow-800': attendance.status === 'pending',
+                  'bg-green-100 text-green-800': attendance.status === 'present',
+                  'bg-red-100 text-red-800': attendance.status === 'absent'
+                }">
+            {{ getAttendanceStatusText(attendance.status) }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Attendance Details -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div class="flex items-center text-sm text-gray-600">
+          <svg class="w-4 h-4 mr-2 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m0 0V7a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V9a2 2 0 012-2z"></path>
+          </svg>
+          <span class="font-medium">Data:</span>
+          <span class="ml-1">{{ attendance.date | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <div class="flex items-center text-sm text-gray-600">
+          <svg class="w-4 h-4 mr-2 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="font-medium">Ora:</span>
+          <span class="ml-1">{{ attendance.timestamp | date:'HH:mm' }}</span>
+        </div>
+        <div class="flex items-center text-sm text-gray-600" *ngIf="attendance.location">
+          <svg class="w-4 h-4 mr-2 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+          <span class="font-medium">Luogo:</span>
+          <span class="ml-1">{{ attendance.location }}</span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+        <div class="flex items-center space-x-4">
+          <div class="text-sm text-gray-500">
+            Richiesta il {{ attendance.submittedAt | date:'dd/MM/yyyy HH:mm' }}
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3" *ngIf="attendance.status === 'pending'">
+          <button (click)="rejectAttendance(attendance.id)"
+                  class="btn-solid btn-warning text-sm px-4 py-2 flex items-center">
+            <svg class="w-4 h-4 mr-1 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+            Rifiuta
+          </button>
+          <button (click)="approveAttendance(attendance.id)"
+                  class="btn-solid btn-success text-sm px-4 py-2 flex items-center">
+            <svg class="w-4 h-4 mr-1 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            Approva
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!pendingAttendance || pendingAttendance.length === 0" class="text-center py-12">
+    <svg class="mx-auto h-12 w-12 text-gray-400 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+    </svg>
+    <h3 class="mt-2 text-sm font-medium text-gray-900">Nessuna presenza in attesa</h3>
+    <p class="mt-1 text-sm text-gray-500">
+      Non ci sono presenze da approvare al momento.
+    </p>
+  </div>
+</div>

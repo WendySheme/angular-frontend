@@ -1,12 +1,22 @@
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+<div class="min-h-screen dark-gradient-bg animated-bg">
+  <!-- Background animation -->
+  <div class="floating-circles">
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+    <div class="circle circle-3"></div>
+    <div class="circle circle-4"></div>
+    <div class="circle circle-5"></div>
+    <div class="circle circle-6"></div>
+  </div>
+
   <!-- navigazione -->
-  <nav class="relative z-10 bg-white bg-opacity-90 backdrop-blur-sm shadow-lg">
+  <nav class="relative z-10 glass-card mx-4 mt-4 shadow-lg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-16">
         <div class="flex items-center">
           <div class="flex-shrink-0 flex items-center space-x-3">
-            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center shadow-lg">
+              <svg class="w-6 h-6 text-white icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
               </svg>
             </div>
@@ -21,7 +31,7 @@
           </button>
           <button
             (click)="navigateToLogin()"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg">
+            class="btn-solid btn-primary">
             Login
           </button>
         </div>
@@ -30,16 +40,14 @@
   </nav>
 
   <!-- sezione hero -->
-  <section class="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+  <section class="relative z-10 py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
     <div class="relative max-w-7xl mx-auto text-center">
-      <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
         Gestione Presenze
-        <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Semplificata
-        </span>
+      
       </h1>
 
-      <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-10 leading-relaxed">
+      <p class="text-xl text-blue-100 max-w-3xl mx-auto mb-10 leading-relaxed">
       Lorem ipsum dolor sit amet, consectetur adipisci elit, 
       sed eiusmod tempor incidunt ut labore et dolore magna aliqua. 
       </p>
@@ -48,8 +56,8 @@
       <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
         <button
           (click)="navigateToLogin('student')"
-          class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          class="w-full sm:w-auto btn-solid btn-primary px-8 py-4 rounded-xl font-semibold flex items-center justify-center">
+          <svg class="w-5 h-5 mr-2 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
           </svg>
           Accedi come Studente
@@ -57,8 +65,8 @@
 
         <button
           (click)="navigateToLogin('tutor')"
-          class="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          class="w-full sm:w-auto btn-solid btn-warning px-8 py-4 rounded-xl font-semibold flex items-center justify-center">
+          <svg class="w-5 h-5 mr-2 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
           </svg>
           Accedi come Tutor
@@ -68,13 +76,13 @@
   </section>
 
   <!-- sezione funzionalità -->
-  <section id="features" class="py-20 bg-white">
+  <section id="features" class="relative z-10 py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16">
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
           Caratteristiche Principali
         </h2>
-        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+        <p class="text-xl text-blue-200 max-w-2xl mx-auto">
           Lorem ipsum dolor sit amet, consectetur adipisci elit, 
           sed eiusmod tempor incidunt ut labore et dolore magna aliqua
         </p>
@@ -83,10 +91,10 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div
           *ngFor="let feature of features; let i = index"
-          class="group bg-white rounded-xl shadow-lg border border-gray-100 p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+          class="glass-card p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
 
-          <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
+            <svg class="w-8 h-8 text-white icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="feature.icon"></path>
             </svg>
           </div>

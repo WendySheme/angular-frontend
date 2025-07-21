@@ -1,10 +1,11 @@
+@import '../../../../shared/styles/animated-background.scss';
+
 :host {
   display: block;
   min-height: 100vh;
 }
 
 .hero-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   padding: 4rem 0;
   text-align: center;
@@ -43,38 +44,6 @@
     flex-direction: column;
     align-items: center;
     gap: 1rem;
-  }
-}
-
-.btn {
-  padding: 0.75rem 2rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  border: none;
-  cursor: pointer;
-  
-  &.btn-primary {
-    background-color: #4f46e5;
-    color: white;
-    
-    &:hover {
-      background-color: #3730a3;
-      transform: translateY(-2px);
-    }
-  }
-  
-  &.btn-outline {
-    background-color: transparent;
-    color: white;
-    border: 2px solid white;
-    
-    &:hover {
-      background-color: white;
-      color: #4f46e5;
-      transform: translateY(-2px);
-    }
   }
 }
 
@@ -122,7 +91,7 @@
 .feature-icon {
   width: 3rem;
   height: 3rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
   border-radius: 0.75rem;
   display: flex;
   align-items: center;
@@ -173,11 +142,11 @@
   }
   
   &.student-card {
-    border-left: 4px solid #3b82f6;
+    border-left: 4px solid #2563eb;
   }
   
   &.tutor-card {
-    border-left: 4px solid #f59e0b;
+    border-left: 4px solid #ea580c;
   }
 }
 
@@ -187,11 +156,11 @@
   margin-bottom: 1rem;
   
   &.student-title {
-    color: #3b82f6;
+    color: #2563eb;
   }
   
   &.tutor-title {
-    color: #f59e0b;
+    color: #cc703f;
   }
 }
 
@@ -210,7 +179,7 @@
       content: '✓';
       position: absolute;
       left: 0;
-      color: #10b981;
+      color: #16a34a;
       font-weight: bold;
     }
   }
@@ -236,11 +205,4 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
-}
-
-.gradient-text {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
