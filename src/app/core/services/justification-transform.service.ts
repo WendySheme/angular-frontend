@@ -1,0 +1,99 @@
+import { Injectable } from '@angular/core';
+import { Justification, JustificationType } from 'src/app/shared/models/justification';
+import { BaseTransformService } from './base-transform.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class JustificationTransformService {
+
+  constructor(private baseTransform: BaseTransformService) {}
+
+  transformBackend(data: any): Justification {
+    return this.baseTransform.transformData<Justification>(data, {
+      fieldMappings: {
+        id: (data) => data.id?.toString() ?? '',
+        studentId: (data) => data.studentId?.toString() ?? data.student_id?.toString() ?? '',
+        date: (data) => data.date ?? data.created_at ?? '',
+        attendanceDate: (data) => data.attendanceDate ?? data.attendance_date ?? data.date,
+        type: (data) => this.mapJustificationType(data.type ?? data.tipo),
+        reason: (data) => data.reason ?? data.motivo ?? '',
+        description: (data) => data.description ?? data.descrizione ?? '',
+        status: (data) => this.mapStatus(data.status ?? data.stato),
+        submittedAt: (data) => this.baseTransform.sanitizeDate(data.submittedAt ?? data.submitted_at ?? data.createdAt),
+        reviewedBy: (data) => data.reviewedBy?.toString() ?? data.reviewed_by?.toString(),
+        reviewedAt: (data) => data.reviewedAt ? this.baseTransform.sanitizeDate(data.reviewedAt) : undefined,
+        reviewNotes: (data) => data.reviewNotes ?? data.review_notes ?? ''
+      },
+      defaultValues: {
+        attachments: [],
+        student: undefined
+      },
+      requiredFields: ['id', 'studentId'],
+      validators: {
+        id: (value) => !!value && value.length > 0,
+        studentId: (value) => !!value && value.length > 0,
+        type: (value) => ['medical', 'illness', 'family', 'other'].includes(value),
+        status: (value) => ['pending', 'approved', 'rejected'].includes(value)
+      }
+    });
+  }
+
+  transformBackendArray(dataArray: any[]): Justification[] {
+    return this.baseTransform.transformArray<Justification>(dataArray, {
+      fieldMappings: {
+        id: (data) => data.id?.toString() ?? '',
+        studentId: (data) => data.studentId?.toString() ?? data.student_id?.toString() ?? '',
+        date: (data) => data.date ?? data.created_at ?? '',
+        attendanceDate: (data) => data.attendanceDate ?? data.attendance_date ?? data.date,
+        type: (data) => this.mapJustificationType(data.type ?? data.tipo),
+        reason: (data) => data.reason ?? data.motivo ?? '',
+        description: (data) => data.description ?? data.descrizione ?? '',
+        status: (data) => this.mapStatus(data.status ?? data.stato),
+        submittedAt: (data) => this.baseTransform.sanitizeDate(data.submittedAt ?? data.submitted_at ?? data.createdAt),
+        reviewedBy: (data) => data.reviewedBy?.toString() ?? data.reviewed_by?.toString(),
+        reviewedAt: (data) => data.reviewedAt ? this.baseTransform.sanitizeDate(data.reviewedAt) : undefined,
+        reviewNotes: (data) => data.reviewNotes ?? data.review_notes ?? ''
+      },
+      defaultValues: {
+        attachments: [],
+        student: undefined
+      },
+      requiredFields: ['id', 'studentId']
+    });
+  }
+
+  private mapJustificationType(type: any): JustificationType {
+    const typeMap: { [key: string]: JustificationType } = {
+      'medical': 'medical',
+      'medico': 'medical',
+      'illness': 'illness',
+      'malattia': 'illness',
+      'family': 'family',
+      'famiglia': 'family',
+      'familiare': 'family',
+      'other': 'other',
+      'altro': 'other'
+    };
+
+    const normalizedType = String(type).toLowerCase();
+    return typeMap[normalizedType] || 'other';
+  }
+
+  private mapStatus(status: any): 'pending' | 'approved' | 'rejected' {
+    const statusMap: { [key: string]: 'pending' | 'approved' | 'rejected' } = {
+      'pending': 'pending',
+      'in_attesa': 'pending',
+      'attesa': 'pending',
+      'approved': 'approved',
+      'approvato': 'approved',
+      'accettato': 'approved',
+      'rejected': 'rejected',
+      'rifiutato': 'rejected',
+      'respinto': 'rejected'
+    };
+
+    const normalizedStatus = String(status).toLowerCase();
+    return statusMap[normalizedStatus] || 'pending';
+  }
+}
