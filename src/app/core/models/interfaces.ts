@@ -1,82 +1,129 @@
-export enum UserRole {
-  STUDENT = 'student',
-  TUTOR = 'tutor',
-  ADMIN = 'admin'
-}
+import { User } from "src/app/shared/models/user";
 
-export interface User {
+export interface Attendance {
   id: string;
-  email: string;
-  name: string;
-  surname: string;
-  role: UserRole;
-  studentId?: string;
-  tutorId?: string;
-  assignedTutorId?: string;
-  assignedTutor?: User;
-  students?: User[];
-  isActive: boolean;
-  lastLogin?: Date;
-  profilePicture?: string;
+  studentId: string;
+  student?: User;
+  date: Date;
+  timestamp?: Date;
+  status: AttendanceStatus;
+  timeIn?: Date;
+  timeOut?: Date;
+  notes?: string;
+  approvalStatus: ApprovalStatus;
+  approvedById?: string;
+  approvedBy?: User;
+  approvedAt?: Date;
+  rejectionReason?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface LoginCredentials {
-  email: string;
-  password: string;
+export enum AttendanceStatus {
+  PRESENT = 'present',
+  ABSENT = 'absent',
+  LATE = 'late',
+  JUSTIFIED = 'justified'
 }
 
-export interface AuthResponse {
-  user: User;
-  token: string;
-  refreshToken: string;
-}
-
-export interface ApiResponse<T> {
-  success: boolean;
-  data: T;
-  message?: string;
-  error?: string;
-}
-
-export interface Notification {
-  id: string;
-  userId: string;
-  title: string;
-  message: string;
-  type: 'info' | 'success' | 'warning' | 'error';
-  read: boolean;
-  createdAt: Date;
-  updatedAt?: Date;
-}
-
-export interface Student {
-  id: string;
-  name: string;
-  email: string;
-  studentId: string;
-  course?: string;
-  year?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-export interface AttendanceRecord {
-  id: string;
-  studentId: string;
-  date: Date;
-  status: 'present' | 'absent' | 'late' | 'excused';
-  notes?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+export enum ApprovalStatus {
+  PENDING = 'pending',
+  APPROVED = 'approved',
+  REJECTED = 'rejected'
 }
 
 export interface AttendanceStats {
-  totalDays: number;
+  statusStats: StatusStat[];
+  approvalStats: StatusStat[];
+  attendanceRate: number;
+  period: string;
   presentDays: number;
   absentDays: number;
-  lateDays: number;
-  excusedDays: number;
-  attendanceRate: number;
 }
+
+export interface StatusStat {
+  _id: string;
+  count: number;
+}
+
+export type JustificationType = 'medical' | 'illness' | 'family' | 'other';
+
+export interface Justification {
+  id: string;
+  studentId: string;
+  student?: User;
+  date: string;
+  attendanceDate?: string;
+  type: JustificationType;
+  reason: string;
+  description?: string;
+  status: 'pending' | 'approved' | 'rejected';
+  attachments?: File[];
+  submittedAt: Date;
+  reviewedBy?: string;
+  reviewedAt?: Date;
+  reviewNotes?: string;
+}
+
+export interface Notification  {
+  id: string;
+  userId: string;
+  type: 'attendance' | 'justification' | 'system' | 'reminder';
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt: Date;
+  data?: any;
+}
+
+export enum NotificationType {
+  INFO = 'info',
+  WARNING = 'warning',
+  REMINDER = 'reminder',
+  APPROVAL = 'approval',
+  REJECTION = 'rejection'
+}
+
+
+export interface StudentSummary {
+  student: User;
+  stats: AttendanceStats;
+  recentAttendance: Attendance[];
+  pendingJustifications: number;
+  status: 'good' | 'warning' | 'critical';
+}
+
+export interface ApiResponse<T>  {
+  success: boolean;
+  data?: T;
+  message?: string;
+  errors?: string[];
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
+}
+
+export interface AppError {
+  code: string;
+  message: string;
+  details?: any;
+  timestamp: Date;
+}
+
+export interface ValidationError {
+  field: string;
+  message: string;
+  value?: any;
+}
+
+export interface StatusStat {
+  _id: string;
+  count: number;
+}
+
+

@@ -167,6 +167,42 @@ export class TutorDashboardComponent implements OnInit, OnDestroy {
     this.notificationService.info('Inviata', 'Notifica inviata agli studenti');
   }
 
+  trackByAttendanceId(index: number, item: Attendance): string {
+    return item.id;
+  }
+
+  trackByJustificationId(index: number, item: Justification): string {
+    return item.id;
+  }
+
+  trackByStudentId(index: number, item: StudentSummary): string {
+    return item.student?.id || index.toString();
+  }
+
+  getStudentStatusClass(isActive: boolean | undefined): string {
+    return isActive ? 'status-active' : 'status-inactive';
+  }
+
+  viewAllStudents(): void {
+    this.notificationService.info('Info', 'Visualizzazione di tutti gli studenti');
+  }
+
+  exportAttendance(): void {
+    this.notificationService.info('Export', 'Esportazione presenze in corso...');
+  }
+
+  generateReport(): void {
+    this.notificationService.info('Report', 'Generazione report in corso...');
+  }
+
+  manageStudents(): void {
+    this.notificationService.info('Gestione', 'Apertura gestione studenti...');
+  }
+
+  viewStatistics(): void {
+    this.notificationService.info('Statistiche', 'Visualizzazione statistiche...');
+  }
+
   logout(): void {
     this.authService.logout();
   }

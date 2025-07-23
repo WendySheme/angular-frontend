@@ -1,5 +1,7 @@
+
 import { Injectable } from '@angular/core';
 import { Justification, JustificationType } from 'src/app/shared/models/justification';
+import { GiustificativoDTO, TipoGiustificazione, StatoApprovazione } from '../models/backend-dtos';
 import { BaseTransformService } from './base-transform.service';
 
 @Injectable({
@@ -9,7 +11,7 @@ export class JustificationTransformService {
 
   constructor(private baseTransform: BaseTransformService) {}
 
-  transformBackend(data: any): Justification {
+  transformBackend(data: GiustificativoDTO | any): Justification {
     return this.baseTransform.transformData<Justification>(data, {
       fieldMappings: {
         id: (data) => data.id?.toString() ?? '',
@@ -39,7 +41,7 @@ export class JustificationTransformService {
     });
   }
 
-  transformBackendArray(dataArray: any[]): Justification[] {
+  transformBackendArray(dataArray: GiustificativoDTO[] | any[]): Justification[] {
     return this.baseTransform.transformArray<Justification>(dataArray, {
       fieldMappings: {
         id: (data) => data.id?.toString() ?? '',
@@ -63,7 +65,22 @@ export class JustificationTransformService {
     });
   }
 
-  private mapJustificationType(type: any): JustificationType {
+  private mapJustificationType(type: TipoGiustificazione | string | any): JustificationType {
+    // Handle backend TipoGiustificazione enum values
+    if (type === TipoGiustificazione.MEDICO || type === 'MEDICO') {
+      return 'medical';
+    }
+    if (type === TipoGiustificazione.MALATTIA || type === 'MALATTIA') {
+      return 'illness';
+    }
+    if (type === TipoGiustificazione.FAMIGLIA || type === 'FAMIGLIA') {
+      return 'family';
+    }
+    if (type === TipoGiustificazione.ALTRO || type === 'ALTRO') {
+      return 'other';
+    }
+
+    // Handle other possible values for backwards compatibility
     const typeMap: { [key: string]: JustificationType } = {
       'medical': 'medical',
       'medico': 'medical',
@@ -80,7 +97,19 @@ export class JustificationTransformService {
     return typeMap[normalizedType] || 'other';
   }
 
-  private mapStatus(status: any): 'pending' | 'approved' | 'rejected' {
+  private mapStatus(status: StatoApprovazione | string | any): 'pending' | 'approved' | 'rejected' {
+    // Handle backend StatoApprovazione enum values
+    if (status === StatoApprovazione.IN_ATTESA || status === 'IN_ATTESA') {
+      return 'pending';
+    }
+    if (status === StatoApprovazione.APPROVATO || status === 'APPROVATO') {
+      return 'approved';
+    }
+    if (status === StatoApprovazione.RIFIUTATO || status === 'RIFIUTATO') {
+      return 'rejected';
+    }
+
+    // Handle other possible values for backwards compatibility
     const statusMap: { [key: string]: 'pending' | 'approved' | 'rejected' } = {
       'pending': 'pending',
       'in_attesa': 'pending',

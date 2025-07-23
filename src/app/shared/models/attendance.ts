@@ -5,7 +5,7 @@ export interface Attendance {
   studentId: string;
   student?: User;
   date: Date;
-  timestamp?: Date; // Add timestamp for template compatibility
+  timestamp?: Date;
   status: AttendanceStatus;
   timeIn?: Date;
   timeOut?: Date;
@@ -15,8 +15,6 @@ export interface Attendance {
   approvedBy?: User;
   approvedAt?: Date;
   rejectionReason?: string;
-  latitude?: number;
-  longitude?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -39,6 +37,8 @@ export interface AttendanceStats {
   approvalStats: StatusStat[];
   attendanceRate: number;
   period: string;
+  presentDays: number;
+  absentDays: number;
 }
 
 export interface StatusStat {

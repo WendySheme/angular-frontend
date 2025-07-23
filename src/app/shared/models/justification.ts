@@ -6,12 +6,12 @@ export type JustificationType = 'medical' | 'illness' | 'family' | 'other';
 export interface Justification {
   id: string;
   studentId: string;
-  student?: User; // Add student object for template access
+  student?: User;
   date: string;
-  attendanceDate?: string; // Add attendanceDate for template access
+  attendanceDate?: string;
   type: JustificationType;
   reason: string;
-  description?: string; // Add description for template access
+  description?: string;
   status: 'pending' | 'approved' | 'rejected';
   attachments?: File[];
   submittedAt: Date;

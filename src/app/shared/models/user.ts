@@ -1,13 +1,15 @@
 export interface User {
   id: string;
-  email: string;
   name: string;
   surname: string;
+  birthDate?: Date;
+  address?: string;
+  phoneNumber?: string;
+  email: string;
+  username?: string;
   role: UserRole;
-  studentId?: string;
+  tutor?: User;
   tutorId?: string;
-  assignedTutorId?: string;
-  assignedTutor?: User;
   students?: User[];
   isActive: boolean;
   lastLogin?: Date;
