@@ -1,25 +1,8 @@
-import { BaseTransformService } from './base-transform.service';
-import { StatusStat } from './../../shared/models/attendance';
-import { Injectable } from '@angular/core';
-import { UtenteDTO } from '../models/backend-dtos';
-import { PresenzaDTO } from '../models/backend-dtos';
-import { GiustificativoDTO } from '../models/backend-dtos';
-import { MeseDTO } from '../models/backend-dtos';
-import { RuoloEnum,Stato,StatoApprovazione,TipoGiustificazione } from '../models/backend-dtos';
-import  { Attendance, AttendanceStatus, ApprovalStatus, JustificationType } from '../models/interfaces';
-import
- {
-  Justification,
-  Notification,
-  NotificationType,
-  StudentSummary,
-  ApiResponse,
-  PaginatedResponse,
-  AppError,
-  ValidationError,
-} from '../models/interfaces';
-import { User } from 'src/app/shared/models/user';
 
+import { BaseTransformService } from './base-transform.service';
+import { Injectable } from '@angular/core';
+import { RuoloEnum, UtenteDTO } from '../models/backend-dtos';
+import { User, UserRole } from 'src/app/shared/models/user'
 
 
 
@@ -30,7 +13,7 @@ export class TransformService {
 
   constructor( private BaseTransformService: BaseTransformService) {}
 
-  transformBackend(data: UtenteDTO | UtenteDTO): User {
+  transformBackend(data: UtenteDTO): User {
     return this.BaseTransformService.transformData<User>(data, {
       fieldMappings: {
         id:data => data.id?.toString() ?? '',
@@ -46,10 +29,50 @@ export class TransformService {
         tutor:data => data.tutor ? this.transformBackend(data.tutor) : undefined,
         tutorId: data => data.tutor?.id?.toString() ?? data.id_tutor?.toString(),
         students: data => data.students ? data.students.map((student: any) => this.transformBackend(student)) : [],
-        lastLogin: data => data.lastLogin ? this.BaseTransformService.sanitizeDate(data.last
+      },
+
+      defaultValues : {
+        profilePicture: '',
+        isActive: true,
+        createdAt: new Date,
+      },
+      requiredFields: ['id','email'],
+
+      validators: {
+      id: (value) => !!value && value.length > 0,
+      email: (value) => !!value && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+      role: (value) => Object.values(UserRole).includes(value)
+      }
+          })
+   }
+
+
+// da aggiundere un metodo che gestisce una lista di utenti + gestione errori
+
+
+   private mapRole(RuoloEnum: string) : UserRole {
+    switch(RuoloEnum?.toLowerCase()) {
+      case 'student':
+        case 'studente':
+        return UserRole.STUDENT;
+
+      case 'tutor':
+        return UserRole.TUTOR;
+
+
+        case 'admin':
+        case 'amministratore':
+          default:
+            return UserRole.ADMIN;
+
+
+   }
 
 
 
 
-}   ,
 
+
+
+  }
+} // last parenthesis

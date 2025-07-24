@@ -66,7 +66,7 @@ export class JustificationTransformService {
   }
 
   private mapJustificationType(type: TipoGiustificazione | string | any): JustificationType {
-    // Handle backend TipoGiustificazione enum values
+
     if (type === TipoGiustificazione.MEDICO || type === 'MEDICO') {
       return 'medical';
     }
@@ -79,8 +79,6 @@ export class JustificationTransformService {
     if (type === TipoGiustificazione.ALTRO || type === 'ALTRO') {
       return 'other';
     }
-
-    // Handle other possible values for backwards compatibility
     const typeMap: { [key: string]: JustificationType } = {
       'medical': 'medical',
       'medico': 'medical',
@@ -109,7 +107,7 @@ export class JustificationTransformService {
       return 'rejected';
     }
 
-    // Handle other possible values for backwards compatibility
+
     const statusMap: { [key: string]: 'pending' | 'approved' | 'rejected' } = {
       'pending': 'pending',
       'in_attesa': 'pending',

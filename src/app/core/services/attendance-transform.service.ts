@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Attendance, AttendanceStatus, ApprovalStatus, AttendanceStats } from '../../shared/models/attendance';
-import { AttendanceDTO, Stato, StatoApprovazione } from '../models/backend-dtos';
+import { PresenzaDTO, Stato, StatoApprovazione } from '../models/backend-dtos';
 import { BaseTransformService } from './base-transform.service';
 
 @Injectable({
@@ -10,7 +10,7 @@ export class AttendanceTransformService {
 
   constructor(private baseTransform: BaseTransformService) {}
 
-  transformBackend(data: AttendanceDTO | any): Attendance {
+  transformBackend(data: PresenzaDTO | any): Attendance {
     return this.baseTransform.transformData<Attendance>(data, {
       fieldMappings: {
         id: (data) => data.id?.toString() ?? '',
@@ -19,21 +19,12 @@ export class AttendanceTransformService {
         timestamp: (data) => data.timestamp ? this.baseTransform.sanitizeDate(data.timestamp) : undefined,
         status: (data) => this.mapAttendanceStatus(data.status ?? data.stato),
         timeIn: (data) => data.timeIn ? this.baseTransform.sanitizeDate(data.timeIn ?? data.orario_entrata) : undefined,
-        timeOut: (data) => data.timeOut ? this.baseTransform.sanitizeDate(data.timeOut ?? data.orario_uscita) : undefined,
-        notes: (data) => this.baseTransform.sanitizeString(data.notes ?? data.note),
         approvalStatus: (data) => this.mapApprovalStatus(data.approvalStatus ?? data.stato_approvazione),
         approvedById: (data) => data.approvedById?.toString() ?? data.approved_by_id?.toString(),
         approvedAt: (data) => data.approvedAt ? this.baseTransform.sanitizeDate(data.approvedAt ?? data.approvato_il) : undefined,
         rejectionReason: (data) => this.baseTransform.sanitizeString(data.rejectionReason ?? data.motivo_rifiuto),
-        latitude: (data) => this.baseTransform.sanitizeNumber(data.latitude ?? data.latitudine),
-        longitude: (data) => this.baseTransform.sanitizeNumber(data.longitude ?? data.longitudine),
-        createdAt: (data) => this.baseTransform.sanitizeDate(data.createdAt ?? data.created_at ?? data.creato_il),
-        updatedAt: (data) => this.baseTransform.sanitizeDate(data.updatedAt ?? data.updated_at ?? data.aggiornato_il)
       },
-      defaultValues: {
-        notes: '',
 
-      },
       requiredFields: ['id', 'studentId', 'date', 'status', 'approvalStatus'],
       validators: {
         id: (value) => !!value && value.length > 0,
@@ -44,7 +35,7 @@ export class AttendanceTransformService {
     });
   }
 
-  transformBackendArray(dataArray: AttendanceDTO[] | any[]): Attendance[] {
+  transformBackendArray(dataArray: PresenzaDTO[] | any[]): Attendance[] {
     return this.baseTransform.transformArray<Attendance>(dataArray, {
       fieldMappings: {
         id: (data) => data.id?.toString() ?? '',
@@ -53,16 +44,11 @@ export class AttendanceTransformService {
         timestamp: (data) => data.timestamp ? this.baseTransform.sanitizeDate(data.timestamp) : undefined,
         status: (data) => this.mapAttendanceStatus(data.status ?? data.stato),
         timeIn: (data) => data.timeIn ? this.baseTransform.sanitizeDate(data.timeIn ?? data.orario_entrata) : undefined,
-        timeOut: (data) => data.timeOut ? this.baseTransform.sanitizeDate(data.timeOut ?? data.orario_uscita) : undefined,
-        notes: (data) => this.baseTransform.sanitizeString(data.notes ?? data.note),
         approvalStatus: (data) => this.mapApprovalStatus(data.approvalStatus ?? data.stato_approvazione),
         approvedById: (data) => data.approvedById?.toString() ?? data.approved_by_id?.toString(),
         approvedAt: (data) => data.approvedAt ? this.baseTransform.sanitizeDate(data.approvedAt ?? data.approvato_il) : undefined,
         rejectionReason: (data) => this.baseTransform.sanitizeString(data.rejectionReason ?? data.motivo_rifiuto),
-        latitude: (data) => this.baseTransform.sanitizeNumber(data.latitude ?? data.latitudine),
-        longitude: (data) => this.baseTransform.sanitizeNumber(data.longitude ?? data.longitudine),
-        createdAt: (data) => this.baseTransform.sanitizeDate(data.createdAt ?? data.created_at ?? data.creato_il),
-        updatedAt: (data) => this.baseTransform.sanitizeDate(data.updatedAt ?? data.updated_at ?? data.aggiornato_il)
+
       },
       defaultValues: {
         notes: '',
@@ -72,6 +58,7 @@ export class AttendanceTransformService {
     });
   }
 
+  //sezione per le statistiche (da integrare con il design ) sezione facoltativa
   transformAttendanceStats(data: any): AttendanceStats {
     return this.baseTransform.transformData<AttendanceStats>(data, {
       fieldMappings: {
@@ -100,7 +87,7 @@ export class AttendanceTransformService {
   }
 
   private mapAttendanceStatus(status: Stato | string | any): AttendanceStatus {
-    // Handle backend Stato enum values
+
     if (status === Stato.PRESENTE || status === 'PRESENTE') {
       return AttendanceStatus.PRESENT;
     }
@@ -108,7 +95,7 @@ export class AttendanceTransformService {
       return AttendanceStatus.ABSENT;
     }
 
-    // Handle other possible values for backwards compatibility
+    //  gestisce la 'backwards compatibility'
     const statusMap: { [key: string]: AttendanceStatus } = {
       'present': AttendanceStatus.PRESENT,
       'presente': AttendanceStatus.PRESENT,
@@ -126,7 +113,7 @@ export class AttendanceTransformService {
   }
 
   private mapApprovalStatus(status: StatoApprovazione | string | any): ApprovalStatus {
-    // Handle backend StatoApprovazione enum values
+    // gestione enum
     if (status === StatoApprovazione.IN_ATTESA || status === 'IN_ATTESA') {
       return ApprovalStatus.PENDING;
     }
@@ -137,7 +124,7 @@ export class AttendanceTransformService {
       return ApprovalStatus.REJECTED;
     }
 
-    // Handle other possible values for backwards compatibility
+    // gestione backward compability
     const statusMap: { [key: string]: ApprovalStatus } = {
       'pending': ApprovalStatus.PENDING,
       'in_attesa': ApprovalStatus.PENDING,

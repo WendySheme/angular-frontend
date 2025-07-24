@@ -1,8 +1,8 @@
 export { BaseTransformService } from './base-transform.service';
-export { UserTranformerService } from './user-tranformer.service';
+// riaggiungi lo user transform
 export { JustificationTransformService } from './justification-transform.service';
 export { AttendanceTransformService } from './attendance-transform.service';
-export { TransformService } from './transform.service';
+export { TransformService } from './user-transform.service';
 export { ApiService } from './api';
 export { AuthService } from './auth';
 export { NotificationService } from './notification';

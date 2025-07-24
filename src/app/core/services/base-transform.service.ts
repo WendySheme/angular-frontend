@@ -14,16 +14,16 @@ export interface TransformConfig<T, K> {
 export class BaseTransformService {
 
   transformData<T, K = any>(
-    data: K, 
+    data: K,
     config: TransformConfig<T, K>
   ): T {
     if (!data) {
-      throw new Error('Transform data cannot be null or undefined');
+      throw new Error('transform data cannot be null or undefined');
     }
 
     try {
       const result = { ...config.defaultValues } as T;
-      
+
       if (config.requiredFields) {
         this.validateRequiredFields(data, config.requiredFields);
       }
@@ -42,55 +42,55 @@ export class BaseTransformService {
 
       return result;
     } catch (error) {
-      console.error('Transform error:', error);
-      throw new Error(`Failed to transform data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.error('transform error:', error);
+      throw new Error(`failed to transform data: ${error instanceof Error ? error.message : 'unknown error'}`);
     }
   }
 
   transformArray<T, K = any>(
-    dataArray: K[], 
+    dataArray: K[],
     config: TransformConfig<T, K>
   ): T[] {
     if (!Array.isArray(dataArray)) {
-      throw new Error('Input must be an array');
+      throw new Error('input must be an array');
     }
 
     return dataArray.map((item, index) => {
       try {
         return this.transformData<T, K>(item, config);
       } catch (error) {
-        console.error(`Transform error at index ${index}:`, error);
-        throw new Error(`Failed to transform array item at index ${index}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        console.error(`transform error at index ${index}:`, error);
+        throw new Error(`failed to transform array item at index ${index}: ${error instanceof Error ? error.message : 'unknown error'}`);
       }
     });
   }
 
   safeTransform<T, K = any>(
-    data: K, 
-    config: TransformConfig<T, K>, 
+    data: K,
+    config: TransformConfig<T, K>,
     fallback?: T
   ): T | null {
     try {
       return this.transformData<T, K>(data, config);
     } catch (error) {
-      console.warn('Safe transform failed, returning fallback:', error);
+      console.warn('safe transform failed, returning fallback:', error);
       return fallback || null;
     }
   }
 
   private validateRequiredFields<K>(data: K, requiredFields: (keyof K)[]): void {
-    const missing = requiredFields.filter(field => 
+    const missing = requiredFields.filter(field =>
       data[field] === null || data[field] === undefined
     );
-    
+
     if (missing.length > 0) {
-      throw new Error(`Missing required fields: ${missing.join(', ')}`);
+      throw new Error(`missing required fields: ${missing.join(', ')}`);
     }
   }
 
   private applyFieldMappings<T>(
-    data: any, 
-    result: T, 
+    data: any,
+    result: T,
     mappings: { [key: string]: string | ((data: any) => any) }
   ): void {
     Object.entries(mappings).forEach(([targetField, mapping]) => {
@@ -101,15 +101,15 @@ export class BaseTransformService {
           (result as any)[targetField] = this.getNestedValue(data, mapping);
         }
       } catch (error) {
-        console.warn(`Failed to map field ${targetField}:`, error);
+        console.warn(`failed to map field ${targetField}:`, error);
         (result as any)[targetField] = undefined;
       }
     });
   }
 
   private applyTransformers<T>(
-    data: any, 
-    result: T, 
+    data: any,
+    result: T,
     transformers: { [key: string]: (value: any, data: any) => any }
   ): void {
     Object.entries(transformers).forEach(([field, transformer]) => {
@@ -117,19 +117,19 @@ export class BaseTransformService {
         const currentValue = (result as any)[field];
         (result as any)[field] = transformer(currentValue, data);
       } catch (error) {
-        console.warn(`Failed to transform field ${field}:`, error);
+        console.warn(`failed to transform field ${field}:`, error);
       }
     });
   }
 
   private validateFields<T>(
-    result: T, 
+    result: T,
     validators: { [key: string]: (value: any) => boolean }
   ): void {
     Object.entries(validators).forEach(([field, validator]) => {
       const value = (result as any)[field];
       if (!validator(value)) {
-        throw new Error(`Validation failed for field ${field}`);
+        throw new Error(`validation failed for field ${field}`);
       }
     });
   }
