@@ -6,7 +6,8 @@
       "Bash(ng build)",
       "Bash(wc:*)",
       "Bash(npm test:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(ng serve:*)"
     ],
     "deny": []
   }

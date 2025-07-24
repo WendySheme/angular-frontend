@@ -4,7 +4,8 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { environment } from '../../../environment';
-import { User, LoginCredentials, AuthResponse, ApiResponse } from '../models/interfaces';
+import { LoginCredentials, AuthResponse, ApiResponse } from '../models/interfaces';
+import { User } from '../../shared/models/user';
 
 
 @Injectable({
@@ -36,7 +37,12 @@ export class AuthService {
 
     return this.http.post<ApiResponse<AuthResponse>>(`${environment.apiUrl}/auth/login`, credentials)
       .pipe(
-        map(response => response.data),
+        map(response => {
+          if (!response.data) {
+            throw new Error('No data received from login response');
+          }
+          return response.data;
+        }),
         tap(authResponse => {
           this.setSession(authResponse);
           this.currentUserSubject.next(authResponse.user);
@@ -100,7 +106,12 @@ export class AuthService {
     return this.http.post<ApiResponse<AuthResponse>>(`${environment.apiUrl}/auth/refresh`, {
       refreshToken
     }).pipe(
-      map(response => response.data),
+      map(response => {
+        if (!response.data) {
+          throw new Error('No data received from refresh response');
+        }
+        return response.data;
+      }),
       tap(authResponse => {
         this.setSession(authResponse);
         this.currentUserSubject.next(authResponse.user);

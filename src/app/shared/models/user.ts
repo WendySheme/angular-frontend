@@ -11,11 +11,8 @@ export interface User {
   tutor?: User;
   tutorId?: string;
   students?: User[];
-  isActive: boolean;
-  lastLogin?: Date;
   profilePicture?: string;
-  createdAt: Date;
-  updatedAt: Date;
+
 }
 export enum UserRole {
   STUDENT = 'student',

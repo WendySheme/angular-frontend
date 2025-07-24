@@ -1,5 +1,15 @@
 import { User } from "src/app/shared/models/user";
 
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  user: User;
+  token: string;
+  refreshToken: string;
+}
 
 export interface Attendance {
   id: string;

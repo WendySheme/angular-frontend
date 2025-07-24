@@ -92,7 +92,7 @@
 
     <!-- Dashboard Grid -->
     <div class="dashboard-grid">
-      
+
       <!-- Pending Attendance Card -->
       <div class="pending-attendance-card dark-card">
         <div class="card-header">
@@ -190,9 +190,8 @@
               {{ student.student?.name?.charAt(0) || 'S' }}
             </div>
             <div class="student-info">
-              <p class="student-name-small">{{ student.student?.name || 'Nome non disponibile' }}</p>
-              <div class="student-status" [ngClass]="getStudentStatusClass(student.student?.isActive)">
-                {{ student.student?.isActive ? 'Attivo' : 'Inattivo' }}
+              <p class="student-name-small">{{ student.student.name || 'Nome non disponibile' }}</p>
+
               </div>
             </div>
           </div>
@@ -257,4 +256,4 @@
   <div *ngIf="isLoading" class="loading-overlay">
     <div class="loading-spinner"></div>
   </div>
-</div>
+

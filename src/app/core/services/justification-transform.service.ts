@@ -22,10 +22,7 @@ export class JustificationTransformService {
         reason: (data) => data.reason ?? data.motivo ?? '',
         description: (data) => data.description ?? data.descrizione ?? '',
         status: (data) => this.mapStatus(data.status ?? data.stato),
-        submittedAt: (data) => this.baseTransform.sanitizeDate(data.submittedAt ?? data.submitted_at ?? data.createdAt),
-        reviewedBy: (data) => data.reviewedBy?.toString() ?? data.reviewed_by?.toString(),
-        reviewedAt: (data) => data.reviewedAt ? this.baseTransform.sanitizeDate(data.reviewedAt) : undefined,
-        reviewNotes: (data) => data.reviewNotes ?? data.review_notes ?? ''
+
       },
       defaultValues: {
         attachments: [],
@@ -52,10 +49,7 @@ export class JustificationTransformService {
         reason: (data) => data.reason ?? data.motivo ?? '',
         description: (data) => data.description ?? data.descrizione ?? '',
         status: (data) => this.mapStatus(data.status ?? data.stato),
-        submittedAt: (data) => this.baseTransform.sanitizeDate(data.submittedAt ?? data.submitted_at ?? data.createdAt),
-        reviewedBy: (data) => data.reviewedBy?.toString() ?? data.reviewed_by?.toString(),
-        reviewedAt: (data) => data.reviewedAt ? this.baseTransform.sanitizeDate(data.reviewedAt) : undefined,
-        reviewNotes: (data) => data.reviewNotes ?? data.review_notes ?? ''
+
       },
       defaultValues: {
         attachments: [],
@@ -67,19 +61,23 @@ export class JustificationTransformService {
 
   private mapJustificationType(type: TipoGiustificazione | string | any): JustificationType {
 
-    if (type === TipoGiustificazione.MEDICO || type === 'MEDICO') {
+     if (type === TipoGiustificazione.MEDICO || type === 'MEDICO') {
       return 'medical';
-    }
-    if (type === TipoGiustificazione.MALATTIA || type === 'MALATTIA') {
-      return 'illness';
-    }
+         }
+
+        if (type === TipoGiustificazione.MALATTIA || type === 'MALATTIA') {
+           return 'illness';
+         }
+
     if (type === TipoGiustificazione.FAMIGLIA || type === 'FAMIGLIA') {
       return 'family';
-    }
-    if (type === TipoGiustificazione.ALTRO || type === 'ALTRO') {
-      return 'other';
-    }
-    const typeMap: { [key: string]: JustificationType } = {
+                 }
+
+       if (type === TipoGiustificazione.ALTRO || type === 'ALTRO') {
+            return 'other';
+                 }
+
+                 const typeMap: { [key: string]: JustificationType } = {
       'medical': 'medical',
       'medico': 'medical',
       'illness': 'illness',
@@ -96,7 +94,7 @@ export class JustificationTransformService {
   }
 
   private mapStatus(status: StatoApprovazione | string | any): 'pending' | 'approved' | 'rejected' {
-    // Handle backend StatoApprovazione enum values
+    //enum
     if (status === StatoApprovazione.IN_ATTESA || status === 'IN_ATTESA') {
       return 'pending';
     }

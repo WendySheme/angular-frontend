@@ -8,15 +8,12 @@ export interface Attendance {
   timestamp?: Date;
   status: AttendanceStatus;
   timeIn?: Date;
-  timeOut?: Date;
   notes?: string;
   approvalStatus: ApprovalStatus;
   approvedById?: string;
   approvedBy?: User;
   approvedAt?: Date;
   rejectionReason?: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export enum AttendanceStatus {

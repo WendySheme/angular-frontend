@@ -1,202 +1,117 @@
-# Transform Service Documentation
+# Cosa fa il 'transform layer' service?
+  obiettivo principale è quello di sopperire al gap creato dalla discrepanza di dati tra il back-end e front-end. 
 
-The Transform Service acts as a bridge between your backend API and frontend components, handling data transformation and language mapping between Italian and English.
+# funzionalità
+**supporto della lingua** mapping per la differenza delle lingue usate: inglese per frontend e italiano per backend.
+**type safety** typechecking con ts
+**gestione errori**gestione errori
+**validation** validazione
+**sanitization** data cleaning e conversione delle stringhe e degli array/data/number/string 
 
-## Features
 
-- **Language Support**: Maps Italian field names to English frontend structure
-- **Type Safety**: Full TypeScript support with proper type checking
-- **Error Handling**: Graceful error handling with fallback values
-- **Validation**: Built-in field validation
-- **Sanitization**: Data cleaning and type conversion
+# Suggerimenti
+Il layer **deve** essere  stateless, senza elementi di presentazione e che non crei una situazione "bottleneck":
 
-## Usage Examples
+  >il layer è stateless (spero), non sono presenti variabili che immagazzinano stati.
+  >i metodi sono funzioni (input e output uguali)
+  >non ci sono dipendenze esterne a parte il BaseTransformService
+  >ogni transform e indipendente
 
-### Basic Usage
+  >>il layer non presenta alcuna componente di design 
 
-```typescript
-import { TransformService } from '@core/services';
+  >>>bottleneck situation. 
+  >>> il layer è scalabile, non sono presenti "nested loops" o chiamate API
+  >>> non sono presenti operazioni IO
 
-constructor(private transform: TransformService) {}
 
-// Transform single user from Italian backend Utente entity
-const backendUtente = {
-  id: 123,
-  nome: 'Mario',
-  cognome: 'Rossi',
-  dataNascita: '1995-05-15',
-  indirizzo: 'Via Roma 123, Milano',
-  cellulare: '+39 123 456 7890',
-  email: 'mario.rossi@example.com',
-  username: 'mario.rossi',
-  ruolo: 'STUDENTE',
-  tutor: {
-    id: 456,
-    nome: 'Giuseppe',
-    cognome: 'Bianchi',
-    email: 'giuseppe@tutor.com',
-    ruolo: 'TUTOR'
+# pattern usati 
+**singola responsabilità** - ogni servizio gestisce solo una cosa 
+**dependecy injection** di BaseTransformSErvice
+**funzioni pure** 
+**data validation** 
+**mapping degli enum**
+**null coalescing**
+
+
+# come è stato pensato 
+>Questo layer ha una funzione unica, trasformare i dati e non svolge altro compito
+>>le componenti gestiranno la presentazione 
+>>>i pipe gestiranno il display formatting 
+>>>> i services business logc 
+
+# sezione esempi
+  ## come avviene la conversione di:
+ 
+  ### user
+   ### Input (Backend DTO)
+  ```
+  
+  {
+    id: 1,
+    nome: "Dante",
+    cognome: "Alighieri",
+    email: "dante.alighieri@email.com",
+    ruolo: "STUDENTE",
+    
+    tutor: {
+      id: 2,
+      nome: "virgilio",
+      cognome: "il Duca",
+      ruolo: "TUTOR"
+    }
   }
-};
-
-const frontendUser = this.transform.user.fromBackend(backendUtente);
-// Result: { 
-//   id: '123', 
-//   name: 'Mario', 
-//   surname: 'Rossi', 
-//   birthDate: Date(1995-05-15),
-//   address: 'Via Roma 123, Milano',
-//   phoneNumber: '+39 123 456 7890',
-//   email: 'mario.rossi@example.com',
-//   username: 'mario.rossi',
-//   role: 'STUDENT',
-//   tutor: { name: 'Giuseppe', surname: 'Bianchi', ... }
-// }
 ```
 
-### API Response Transformation
-
-```typescript
-// Transform API response
-this.apiService.getUsers().subscribe(response => {
-  const users = this.transform.transformApiResponseArray(response, 
-    data => this.transform.user.fromBackendArray(data)
-  );
-  this.users = users;
-});
+  ### Output (Frontend Model)
+```
+  {
+    id: "1",
+    name: "Dante",
+    surname: "Alighieri",
+    email: "dante.alighieri@email.com",
+    role: "student",
+    profilePicture: "",
+    isActive: true,
+    tutor: {
+      id: "2",
+      name: "Virgilio",
+      surname: "il Duca",
+      role: "tutor"
+    }
+  }
 ```
 
-### Attendance Data with Stato Enum
+### presenza
+  ### Input
+  ```
+    {
+      id: 1,
+      data: "2024-01-15",
+      stato: "PRESENTE",
+      stato_approvazione: "APPROVATO"
+    }
+  ```
+   ### Output
+  ```
+    {
+     id: "1",
+      date: new Date("2024-01-15"),
+      status: "present",
+      approvalStatus: "approved"
+    }
+  ```
 
-```typescript
-// Transform backend AttendanceDTO with Stato enum
-const backendAttendance = {
-  id: 456,
-  studentId: 123,
-  data: '2024-01-15',
-  stato: Stato.PRESENTE,
-  orarioEntrata: '2024-01-15T08:00:00Z',
-  orarioUscita: '2024-01-15T17:00:00Z',
-  note: 'Presente in orario',
-  statoApprovazione: StatoApprovazione.APPROVATO,
-  approvatoIl: '2024-01-15T18:00:00Z',
-  latitudine: 45.4642,
-  longitudine: 9.1900,
-  creatoIl: '2024-01-15T07:00:00Z',
-  aggiornatoIl: '2024-01-15T18:00:00Z'
-};
+  ### gestione degli errori 
+  
+  >>dati errati
+  { email: "invalid-email", ruolo: "UNKNOWN_ROLE" }
 
-const attendance = this.transform.attendance.fromBackend(backendAttendance);
-// Result: {
-//   id: '456',
-//   studentId: '123',
-//   status: AttendanceStatus.PRESENT,
-//   approvalStatus: ApprovalStatus.APPROVED,
-//   notes: 'Presente in orario',
-//   latitude: 45.4642,
-//   longitude: 9.1900,
-//   ...
-// }
-```
+ >>Validazione dei dati fallita, i dati vengono 'sanificati' e reimpostati in maniera 'sicura'
+  {
+    email: "",  **campo non valido sostituito con una stringa vuota**
+    role: "student" **il valore non essendo riconosciuto viene impostato di default come studente**
+  }
+  
 
-### Safe Transformation
 
-```typescript
-// Safe transformation with fallback
-const user = this.transform.safeTransform(
-  backendData,
-  data => this.transform.user.fromBackend(data),
-  { id: '', name: 'Unknown', email: '', role: 'STUDENT' } // fallback
-);
-```
 
-## Service Structure
-
-- **BaseTransformService**: Core transformation engine
-- **UserTransformerService**: User-specific transformations
-- **JustificationTransformService**: Justification data transformations
-- **AttendanceTransformService**: Attendance data transformations
-- **TransformService**: Main service that aggregates all transformations
-
-## Language Mappings
-
-### User Fields (Utente Entity)
-- `id` (Integer) → `id` (string)
-- `nome` → `name`
-- `cognome` → `surname`
-- `dataNascita` (LocalDate) → `birthDate` (Date)
-- `indirizzo` → `address`
-- `cellulare` → `phoneNumber`
-- `email` → `email`
-- `username` → `username`
-- `ruolo` → `role`
-- `tutor` (nested Utente) → `tutor` (nested User)
-- Role mappings:
-  - `STUDENTE` → `STUDENT`
-  - `TUTOR` → `TUTOR`
-  - `ADMIN` / `AMMINISTRATORE` → `ADMIN`
-
-### Attendance Fields (AttendanceDTO)
-- `id` (Integer) → `id` (string)
-- `studentId` (Integer) → `studentId` (string)
-- `data` (LocalDate string) → `date` (Date)
-- `stato` (Stato enum) → `status` (AttendanceStatus)
-- `orarioEntrata` (LocalDateTime string) → `timeIn` (Date)
-- `orarioUscita` (LocalDateTime string) → `timeOut` (Date)
-- `note` → `notes`
-- `statoApprovazione` (StatoApprovazione enum) → `approvalStatus` (ApprovalStatus)
-- `approvatoDa` → `approvedById`
-- `approvatoIl` → `approvedAt`
-- `motivoRifiuto` → `rejectionReason`
-- `latitudine` → `latitude`
-- `longitudine` → `longitude`
-- `creatoIl` → `createdAt`
-- `aggiornatoIl` → `updatedAt`
-
-#### Backend Enum Mappings:
-- **Stato enum:**
-  - `PRESENTE` → `AttendanceStatus.PRESENT`
-  - `ASSENTE` → `AttendanceStatus.ABSENT`
-- **StatoApprovazione enum:**
-  - `IN_ATTESA` → `ApprovalStatus.PENDING`
-  - `APPROVATO` → `ApprovalStatus.APPROVED`
-  - `RIFIUTATO` → `ApprovalStatus.REJECTED`
-
-### Justification Fields (JustificationDTO)
-- `id` (Integer) → `id` (string)
-- `studentId` (Integer) → `studentId` (string) 
-- `data` (LocalDate string) → `date` (string)
-- `dataPresenza` (LocalDate string) → `attendanceDate` (string)
-- `tipo` (TipoGiustificazione enum) → `type` (JustificationType)
-- `motivo` → `reason`
-- `descrizione` → `description`
-- `stato` (StatoApprovazione enum) → `status` ('pending'|'approved'|'rejected')
-- `inviatoIl` (LocalDateTime string) → `submittedAt` (Date)
-- `rivistoDa` → `reviewedBy`
-- `revistoIl` (LocalDateTime string) → `reviewedAt` (Date)
-- `noteRevisione` → `reviewNotes`
-- `allegati` → `attachments`
-
-#### Backend Enum Mappings:
-- **TipoGiustificazione enum:**
-  - `MEDICO` → `'medical'`
-  - `MALATTIA` → `'illness'`
-  - `FAMIGLIA` → `'family'`
-  - `ALTRO` → `'other'`
-
-## Error Handling
-
-All transform services include:
-- Required field validation
-- Type validation
-- Graceful error handling
-- Detailed error messages
-- Safe transformation methods
-
-## Best Practices
-
-1. Always use the main `TransformService` instead of individual services
-2. Use `safeTransform` for uncertain data
-3. Handle API responses with `transformApiResponse` methods
-4. Provide meaningful fallback values
-5. Log transformation errors for debugging
