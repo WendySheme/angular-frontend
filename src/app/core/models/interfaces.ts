@@ -3,6 +3,7 @@ import { User } from "src/app/shared/models/user";
 export interface LoginCredentials {
   email: string;
   password: string;
+  role?: string;
 }
 
 export interface AuthResponse {
@@ -107,8 +108,8 @@ export interface StudentSummary {
 export interface ApiResponse<T>  {
   success: boolean;
   data?: T;
-  message?: string;
-  errors?: string[];
+  message: string;
+  errorCode?: string;
 }
 
 export interface PaginatedResponse<T> {

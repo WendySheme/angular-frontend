@@ -1,43 +1,46 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api',
-  wsUrl: 'http://localhost:3000',
+  apiUrl: 'http://localhost:8080/api',
+  wsUrl: 'http://localhost:8080',
   appName: 'Registro Elettronico',
   version: '1.0.0',
-  // Development bypass - remove in production
-  enableAuthBypass: true,
+
+
+  // backdoor
+  enableAuthBypass: false,
   developmentUsers: {
     'student@demo.com': {
-      id: 'dev-student-1',
+      id: 1,
       email: 'student@demo.com',
+      nome: 'Mario',
+      cognome: 'Rossi',  
+      ruolo: 'student',
       name: 'Mario',
       surname: 'Rossi',
       role: 'student',
-      studentId: 'STU001',
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      isActive: true
     },
     'tutor@demo.com': {
-      id: 'dev-tutor-1',
+      id: 2,
       email: 'tutor@demo.com',
+      nome: 'Prof. Anna',
+      cognome: 'Bianchi',
+      ruolo: 'tutor',
       name: 'Prof. Anna',
-      surname: 'Bianchi',
+      surname: 'Bianchi', 
       role: 'tutor',
-      tutorId: 'TUT001',
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      isActive: true
     },
     'admin@demo.com': {
-      id: 'dev-admin-1',
+      id: 3,
       email: 'admin@demo.com',
+      nome: 'Admin',
+      cognome: 'System',
+      ruolo: 'admin',
       name: 'Admin',
       surname: 'System',
       role: 'admin',
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      isActive: true
     }
   }
 };

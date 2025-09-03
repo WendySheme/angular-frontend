@@ -176,7 +176,7 @@ export class TutorDashboardComponent implements OnInit, OnDestroy {
   }
 
   trackByStudentId(index: number, item: StudentSummary): string {
-    return item.student?.id || index.toString();
+    return item.student?.id?.toString() || index.toString();
   }
 
   getStudentStatusClass(isActive: boolean | undefined): string {

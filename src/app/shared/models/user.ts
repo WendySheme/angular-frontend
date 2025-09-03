@@ -1,18 +1,21 @@
 export interface User {
-  id: string;
-  name: string;
-  surname: string;
+  id: number;
+  nome: string;
+  cognome: string;
+  email: string;
+  ruolo: string;
+  isActive: boolean;
+  name?: string;
+  surname?: string;
   birthDate?: Date;
   address?: string;
   phoneNumber?: string;
-  email: string;
   username?: string;
-  role: UserRole;
+  role?: string;
   tutor?: User;
   tutorId?: string;
   students?: User[];
   profilePicture?: string;
-
 }
 export enum UserRole {
   STUDENT = 'student',

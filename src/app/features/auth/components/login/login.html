@@ -134,19 +134,57 @@
         </div>
 
         <!-- pulsanti demo -->
-        <div class="flex gap-2 mb-4">
-          <button
-            type="button"
-            (click)="fillDemoCredentials('student')"
-            class="btn-solid btn-secondary text-xs px-3 py-1">
-            Demo Studente
-          </button>
-          <button
-            type="button"
-            (click)="fillDemoCredentials('tutor')"
-            class="btn-solid btn-secondary text-xs px-3 py-1">
-            Demo Tutor
-          </button>
+        <div class="space-y-2 mb-4">
+          <div class="flex gap-2">
+            <button
+              type="button"
+              (click)="fillDemoCredentials('student')"
+              class="btn-solid btn-secondary text-xs px-3 py-1">
+              Demo Studente
+            </button>
+            <button
+              type="button"
+              (click)="fillDemoCredentials('tutor')"
+              class="btn-solid btn-secondary text-xs px-3 py-1">
+              Demo Tutor
+            </button>
+          </div>
+          
+          <!-- Backend test credentials -->
+          <div class="border-t pt-2">
+            <p class="text-xs text-gray-600 mb-2">Test Backend:</p>
+            <div class="flex flex-wrap gap-1 mb-2">
+              <button
+                type="button"
+                (click)="fillBackendTestCredentials('admin@realeites.com')"
+                class="btn-solid btn-primary text-xs px-3 py-1">
+                Admin
+              </button>
+              <button
+                type="button"
+                (click)="fillBackendTestCredentials('luca.marini@email.com')"
+                class="btn-solid btn-primary text-xs px-3 py-1">
+                Tutor
+              </button>
+              <button
+                type="button"
+                (click)="fillBackendTestCredentials('enrico.giacomini@realeites.com')"
+                class="btn-solid btn-primary text-xs px-3 py-1">
+                Tutorato
+              </button>
+            </div>
+            
+            <!-- Debug tools (development only) -->
+            <div class="border-t pt-2" *ngIf="!isProduction">
+              <p class="text-xs text-red-600 mb-1">Debug Tools:</p>
+              <button
+                type="button"
+                (click)="runPayloadTests()"
+                class="btn-solid bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1">
+                Test Payloads
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- pulsante login -->
