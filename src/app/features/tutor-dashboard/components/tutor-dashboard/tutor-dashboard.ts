@@ -58,42 +58,92 @@ export class TutorDashboardComponent implements OnInit, OnDestroy {
   private loadDashboardData(): void {
     this.isLoading = true;
 
+    console.log('🚀 Starting to load dashboard data...');
+
     // carica presenze in sospeso
+    console.log('📋 Loading pending attendance...');
     this.attendanceService.loadPendingAttendance()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (attendance) => {
+          console.log('✅ Pending attendance loaded:', attendance);
           this.pendingAttendance = attendance;
           this.isLoading = false;
         },
         error: (error) => {
-          console.error('Error loading pending attendance:', error);
+          console.error('❌ Error loading pending attendance:', error);
+          console.error('🔍 Full error details:', {
+            status: error.status,
+            statusText: error.statusText,
+            url: error.url,
+            message: error.message,
+            error: error.error
+          });
           this.isLoading = false;
         }
       });
 
     // carica giustificazioni in sospeso
+    console.log('📄 Loading pending justifications...');
     this.justificationService.loadPendingJustifications()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (justifications) => this.pendingJustifications = justifications,
-        error: (error) => console.error('Error loading pending justifications:', error)
+        next: (justifications) => {
+          console.log('✅ Pending justifications loaded:', justifications);
+          this.pendingJustifications = justifications;
+        },
+        error: (error) => {
+          console.error('❌ Error loading pending justifications:', error);
+          console.error('🔍 Full error details:', {
+            status: error.status,
+            statusText: error.statusText,
+            url: error.url,
+            message: error.message,
+            error: error.error
+          });
+        }
       });
 
     // carica studenti
+    console.log('👥 Loading students...');
     this.studentService.loadStudents()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (students) => this.students = students,
-        error: (error) => console.error('Error loading students:', error)
+        next: (students) => {
+          console.log('✅ Students loaded:', students);
+          this.students = students;
+        },
+        error: (error) => {
+          console.error('❌ Error loading students:', error);
+          console.error('🔍 Full error details:', {
+            status: error.status,
+            statusText: error.statusText,
+            url: error.url,
+            message: error.message,
+            error: error.error
+          });
+        }
       });
 
     // carica statistiche
+    console.log('📊 Loading stats...');
     this.attendanceService.loadAttendanceStats()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (stats) => this.stats = stats,
-        error: (error) => console.error('Error loading stats:', error)
+        next: (stats) => {
+          console.log('✅ Stats loaded:', stats);
+          this.stats = stats;
+        },
+        error: (error) => {
+          console.error('❌ Error loading stats:', error);
+          console.error('🔍 Full error details:', {
+            status: error.status,
+            statusText: error.statusText,
+            url: error.url,
+            message: error.message,
+            error: error.error
+          });
+        }
       });
   }
 

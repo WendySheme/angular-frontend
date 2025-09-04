@@ -1,0 +1,259 @@
+<!-- Dark theme tutor dashboard -->
+<div class="dashboard-container">
+  <!-- Background Elements -->
+  <div class="floating-elements">
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="dashboard-content">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <div class="user-avatar">
+          <div class="avatar-circle tutor">
+            {{ currentUser?.name?.charAt(0) || 'T' }}
+          </div>
+          <div class="user-info">
+            <h2 class="user-name">Prof. {{ currentUser?.name || 'Tutor' }}</h2>
+            <p class="user-role">Dashboard Tutor</p>
+          </div>
+        </div>
+      </div>
+      <div class="header-right">
+        <button (click)="logout()" class="logout-btn">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+          </svg>
+          Esci
+        </button>
+      </div>
+    </header>
+
+    <!-- Welcome Section -->
+    <div class="welcome-section dark-card">
+      <h1 class="welcome-title">Benvenuto, Prof. {{ currentUser?.name || 'Tutor' }}!</h1>
+      <p class="welcome-subtitle">Monitora i tuoi studenti e gestisci le approvazioni</p>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-overview">
+      <div class="stat-card dark-card" *ngIf="stats">
+        <div class="stat-icon students">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-value">{{ students?.length || 0 }}</p>
+          <p class="stat-label">Studenti</p>
+        </div>
+      </div>
+
+      <div class="stat-card dark-card">
+        <div class="stat-icon pending">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-value">{{ (pendingAttendance?.length || 0) + (pendingJustifications?.length || 0) }}</p>
+          <p class="stat-label">In Attesa</p>
+        </div>
+      </div>
+
+      <div class="stat-card dark-card">
+        <div class="stat-icon approved">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-value">{{ stats?.approvedToday || 0 }}</p>
+          <p class="stat-label">Approvate Oggi</p>
+        </div>
+      </div>
+
+      <div class="stat-card dark-card">
+        <div class="stat-icon rate">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <p class="stat-value">{{ stats?.attendanceRate ? ((stats.attendanceRate * 100) | number:'1.1-1') + '%' : '0%' }}</p>
+          <p class="stat-label">Tasso Medio</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Grid -->
+    <div class="dashboard-grid">
+
+      <!-- Pending Attendance Card -->
+      <div class="pending-attendance-card dark-card">
+        <div class="card-header">
+          <h3 class="card-title">Presenze in Attesa</h3>
+          <div class="pending-count">{{ pendingAttendance?.length || 0 }}</div>
+        </div>
+
+        <div class="pending-list">
+          <div *ngFor="let attendance of pendingAttendance; trackBy: trackByAttendanceId" class="pending-item">
+            <div class="student-avatar">
+              {{ attendance.student?.name?.charAt(0) || 'S' }}
+            </div>
+            <div class="pending-content">
+              <p class="student-name">{{ attendance.student?.name || 'Nome non disponibile' }}</p>
+              <p class="pending-date">{{ attendance.date | date:'dd/MM/yyyy HH:mm' }}</p>
+            </div>
+            <div class="pending-actions">
+              <button (click)="approveAttendance(attendance.id)" class="approve-btn">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </button>
+              <button (click)="rejectAttendance(attendance.id)" class="reject-btn">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="!pendingAttendance || pendingAttendance.length === 0" class="empty-state">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <p>Nessuna presenza in attesa</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Justifications Card -->
+      <div class="pending-justifications-card dark-card">
+        <div class="card-header">
+          <h3 class="card-title">Giustificazioni in Attesa</h3>
+          <div class="pending-count">{{ pendingJustifications?.length || 0 }}</div>
+        </div>
+
+        <div class="pending-list">
+          <div *ngFor="let justification of pendingJustifications; trackBy: trackByJustificationId" class="pending-item">
+            <div class="student-avatar">
+              {{ justification.student?.name?.charAt(0) || 'S' }}
+            </div>
+            <div class="pending-content">
+              <p class="student-name">{{ justification.student?.name || 'Nome non disponibile' }}</p>
+              <p class="justification-reason">{{ justification.reason }}</p>
+              <p class="pending-date">{{ justification.date | date:'dd/MM/yyyy' }}</p>
+            </div>
+            <div class="pending-actions">
+              <button (click)="approveJustification(justification.id)" class="approve-btn">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </button>
+              <button (click)="rejectJustification(justification.id)" class="reject-btn">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div *ngIf="!pendingJustifications || pendingJustifications.length === 0" class="empty-state">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <p>Nessuna giustificazione in attesa</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Students Overview Card -->
+      <div class="students-overview-card dark-card">
+        <div class="card-header">
+          <h3 class="card-title">I Miei Studenti</h3>
+          <button (click)="viewAllStudents()" class="view-all-btn">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            Vedi Tutti
+          </button>
+        </div>
+
+        <div class="students-grid">
+          <div *ngFor="let student of students?.slice(0, 6); trackBy: trackByStudentId" class="student-card">
+            <div class="student-avatar-small">
+              {{ student.student?.name?.charAt(0) || 'S' }}
+            </div>
+            <div class="student-info">
+              <p class="student-name-small">{{ student.student.name || 'Nome non disponibile' }}</p>
+
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="!students || students.length === 0" class="empty-state">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+            </svg>
+            <p>Nessuno studente assegnato</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions Card -->
+      <div class="quick-actions-card dark-card">
+        <div class="card-header">
+          <h3 class="card-title">Azioni Rapide</h3>
+        </div>
+
+        <div class="actions-grid">
+          <button (click)="exportAttendance()" class="action-button">
+            <div class="action-icon export">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <span>Esporta Presenze</span>
+          </button>
+
+          <button (click)="generateReport()" class="action-button">
+            <div class="action-icon report">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <span>Genera Report</span>
+          </button>
+
+          <button (click)="manageStudents()" class="action-button">
+            <div class="action-icon manage">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"></path>
+              </svg>
+            </div>
+            <span>Gestisci Studenti</span>
+          </button>
+
+          <button (click)="viewStatistics()" class="action-button">
+            <div class="action-icon stats">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+            <span>Visualizza Statistiche</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="loading-spinner"></div>
+  </div>
+

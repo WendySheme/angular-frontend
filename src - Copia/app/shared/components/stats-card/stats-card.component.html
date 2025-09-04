@@ -1,0 +1,23 @@
+<div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition duration-200">
+  <div class="flex items-center justify-between">
+    <div class="flex-1">
+      <h3 class="text-sm font-medium text-gray-600 uppercase tracking-wide">{{ title }}</h3>
+      <p class="text-3xl font-bold text-gray-900 mt-2">{{ value }}</p>
+      <p *ngIf="subtitle" class="text-sm text-gray-500 mt-1">{{ subtitle }}</p>
+    </div>
+    <div *ngIf="icon" class="flex-shrink-0">
+      <div class="w-12 h-12 rounded-lg flex items-center justify-center" [ngClass]="iconBgColor">
+        <svg class="w-6 h-6" [ngClass]="iconColor" fill="currentColor" viewBox="0 0 20 20">
+          <path [attr.d]="iconPath"></path>
+        </svg>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="change !== undefined" class="mt-4 flex items-center">
+    <span class="text-sm font-medium" [ngClass]="changeColor">
+      {{ changeText }}
+    </span>
+    <span class="text-sm text-gray-500 ml-2">dal periodo precedente</span>
+  </div>
+</div>

@@ -4,7 +4,10 @@
       "Bash(npm run build:*)",
       "Bash(npx tsc:*)",
       "Bash(node:*)",
-      "Bash(ng build)"
+      "Bash(ng build)",
+      "Bash(npm run:*)",
+      "Bash(ng serve:*)",
+      "Bash(taskkill:*)"
     ],
     "deny": []
   }

@@ -1,0 +1,15 @@
+<div [ngClass]="cardClasses">
+  <div class="flex items-center">
+    <div class="flex-shrink-0">
+      <div [ngClass]="iconClasses">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="iconSvg"></path>
+        </svg>
+      </div>
+    </div>
+    <div class="ml-4">
+      <p class="text-sm font-medium text-gray-500 truncate">{{ title }}</p>
+      <p class="text-3xl font-bold text-gray-900">{{ value }}</p>
+    </div>
+  </div>
+</div>

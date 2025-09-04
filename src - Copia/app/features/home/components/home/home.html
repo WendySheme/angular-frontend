@@ -1,0 +1,104 @@
+<div class="min-h-screen dark-gradient-bg animated-bg">
+  <!-- Background animation -->
+  <div class="floating-circles">
+    <div class="circle circle-1"></div>
+    <div class="circle circle-2"></div>
+    <div class="circle circle-3"></div>
+    <div class="circle circle-4"></div>
+    <div class="circle circle-5"></div>
+    <div class="circle circle-6"></div>
+  </div>
+
+  <!-- navigazione -->
+  <nav class="relative z-10 glass-card mx-4 mt-4 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center space-x-3">
+            <div class="w-10 h-10 bg-green-600 rounded-xl flex items-center justify-center shadow-lg">
+              <svg class="w-6 h-6 text-white icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+              </svg>
+            </div>
+            <h1 class="text-xl font-bold text-gray-900">Registro Elettronico</h1>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button
+            (click)="scrollToFeatures()"
+            class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+            Funzionalità
+          </button>
+          <button
+            (click)="navigateToLogin()"
+            class="btn-solid btn-primary">
+            Login
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- sezione hero -->
+  <section class="relative z-10 py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <div class="relative max-w-7xl mx-auto text-center">
+      <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+        Gestione Presenze
+
+      </h1>
+
+      <p class="text-xl text-blue-100 max-w-3xl mx-auto mb-10 leading-relaxed">
+      Lorem ipsum dolor sit amet, consectetur adipisci elit,
+      sed eiusmod tempor incidunt ut labore et dolore magna aliqua.
+      </p>
+
+      <!-- pulsanti cta -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+        <button
+          (click)="navigateToLogin('student')"
+          class="w-full sm:w-auto btn-solid btn-primary px-8 py-4 rounded-xl font-semibold flex items-center justify-center">
+          <svg class="w-5 h-5 mr-2 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+          </svg>
+          Accedi come Studente
+        </button>
+
+        <button
+          (click)="navigateToLogin('tutor')"
+          class="w-full sm:w-auto btn-solid btn-warning px-8 py-4 rounded-xl font-semibold flex items-center justify-center">
+          <svg class="w-5 h-5 mr-2 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round"
+            stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+          </svg>
+          Accedi come Tutor
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- sezione funzionalità -->
+  <section id="features" class="relative z-10 py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
+          Caratteristiche Principali
+        </h2>
+        <p class="text-xl text-blue-200 max-w-2xl mx-auto">
+          Lorem ipsum dolor sit amet, consectetur adipisci elit,
+          sed eiusmod tempor incidunt ut labore et dolore magna aliqua
+        </p>
+      </div>
+
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div *ngFor="let feature of features; let i = index" class="card">
+          <div class="card-img"></div>
+          <div class="card-info">
+            <p class="text-body">{{ feature.description }}</p>
+            <p class="text-title">{{ feature.title }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,18 @@
+<div class="app-container min-h-screen bg-gray-50">
+  <!-- intestazione globale (solo su pagine autenticate) -->
+  <app-header *ngIf="authService.isAuthenticated$ | async"></app-header>
+
+  <!-- contenuto principale -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- footer globale (solo su pagine pubbliche) -->
+  <app-footer *ngIf="!(authService.isAuthenticated$ | async)"></app-footer>
+
+  <!-- notifiche globali -->
+  <app-notification></app-notification>
+
+  <!-- loader globale -->
+  <app-loader *ngIf="isLoading"></app-loader>
+</div>

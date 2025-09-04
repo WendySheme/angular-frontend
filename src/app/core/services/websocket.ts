@@ -38,20 +38,29 @@ export class WebSocketService {
     const token = this.authService.getToken();
     if (!token) return;
 
-    this.socket = io(environment.wsUrl, {
-      auth: { token },
-      transports: ['websocket', 'polling']
-    });
+    try {
+      this.socket = io(environment.wsUrl, {
+        auth: { token },
+        transports: ['websocket', 'polling'],
+        timeout: 5000,
+        forceNew: true
+      });
 
-    this.socket.on('connect', () => {
-      console.log('WebSocket connected');
-      this.connectionStatus.next(true);
-    });
+      this.socket.on('connect', () => {
+        console.log('✅ WebSocket connected to', environment.wsUrl);
+        this.connectionStatus.next(true);
+      });
 
-    this.socket.on('disconnect', () => {
-      console.log('WebSocket disconnected');
-      this.connectionStatus.next(false);
-    });
+      this.socket.on('disconnect', () => {
+        console.log('🔌 WebSocket disconnected');
+        this.connectionStatus.next(false);
+      });
+
+      this.socket.on('connect_error', (error) => {
+        console.warn('⚠️ WebSocket connection failed (this is optional):', error.message);
+        this.connectionStatus.next(false);
+        // Don't retry automatically to avoid spam
+      });
 
     this.socket.on('message', (data: any) => {
       this.messageSubject.next({
@@ -85,6 +94,10 @@ export class WebSocketService {
         timestamp: new Date()
       });
     });
+    } catch (error) {
+      console.warn('⚠️ WebSocket initialization failed (this is optional):', error);
+      this.connectionStatus.next(false);
+    }
   }
 
   private disconnect(): void {

@@ -140,6 +140,9 @@ export class LoginComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
+          this.isLoading = false;
+          console.log('✅ Login successful, user data:', response.user);
+          console.log('🔄 User role:', response.user.ruolo || response.user.role);
           this.notificationService.success('Successo', 'Accesso effettuato con successo');
           this.redirectUser(response.user.ruolo || response.user.role || 'student');
         },
@@ -218,6 +221,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     const normalizedRole = role.toLowerCase();
     let redirectUrl = '/student';
     
+    console.log('🎯 Redirecting user with role:', role, '(normalized:', normalizedRole + ')');
+    
     if (normalizedRole === 'admin') {
       redirectUrl = '/admin';
     } else if (normalizedRole === 'tutor' || normalizedRole === 'tutorato') {
@@ -226,7 +231,15 @@ export class LoginComponent implements OnInit, OnDestroy {
       redirectUrl = '/student';
     }
     
-    this.router.navigate([redirectUrl]);
+    console.log('📍 Navigating to:', redirectUrl);
+    this.router.navigate([redirectUrl]).then(success => {
+      console.log('🚀 Navigation result:', success);
+      if (!success) {
+        console.error('❌ Navigation failed!');
+      }
+    }).catch(error => {
+      console.error('❌ Navigation error:', error);
+    });
   }
 
   private markFormGroupTouched(): void {

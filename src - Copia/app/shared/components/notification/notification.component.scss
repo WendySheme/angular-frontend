@@ -1,0 +1,74 @@
+:host {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.notification {
+  pointer-events: auto;
+  animation: slideIn 0.3s ease-out forwards;
+  min-width: 320px;
+  max-width: 400px;
+  
+  &.success {
+    border-left: 4px solid #10b981;
+  }
+  
+  &.error {
+    border-left: 4px solid #ef4444;
+  }
+  
+  &.warning {
+    border-left: 4px solid #f59e0b;
+  }
+  
+  &.info {
+    border-left: 4px solid #3b82f6;
+  }
+  
+  &.dismissing {
+    animation: slideOut 0.3s ease-in forwards;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+    max-height: 200px;
+    margin-bottom: 0.75rem;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+    max-height: 0;
+    margin-bottom: 0;
+  }
+}
+
+.action-button {
+  &.primary {
+    @apply bg-blue-500 text-white hover:bg-blue-600;
+  }
+  
+  &.secondary {
+    @apply bg-gray-200 text-gray-800 hover:bg-gray-300;
+  }
+  
+  &.danger {
+    @apply bg-red-500 text-white hover:bg-red-600;
+  }
+}
